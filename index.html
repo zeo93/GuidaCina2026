@@ -907,8 +907,7 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-fun]');if(
   }
   const EGGS={
     swing:()=>`<img src="panda-altalena.gif" alt="Un panda sull'altalena" width="300" height="300"><div class="eggtxt">🐼 Wheeeee! Buon viaggio!</div>`,
-    itinerario:()=>{const n=DAYS.find(d=>d.date>=todayIso());
-      return `<div class="eggicon-wrap">${big('itinerario')}</div><div class="eggtxt">🧭 Esploratore panda in missione!</div><p class="eggp">${n?`Prossima tappa: <b>Giorno ${n.n} · ${esc(n.title)}</b> (${fd(n)})`:'Missione compiuta! Che viaggio, panda!'}</p>`},
+    itinerario:()=>EGGS.swing(),
     voli:()=>{flyPlane();return null},
     hotel:()=>{const n=DAYS.find(d=>d.date>=todayIso()&&d.hotel);
       return `<div class="eggicon-wrap">${big('hotel')}<span class="zz z1">z</span><span class="zz z2">Z</span><span class="zz z3">z</span></div><div class="eggtxt">😎 Pisolino al sole in corso…</div><p class="eggp">${n?`Prossimo letto: <b>${esc(n.hotel[0])}</b> (${n.city==='Roma'?'':esc(n.city)}, dal ${fd(n)})`:'Hotel finiti: solo ricordi da qui!'}</p>`},
