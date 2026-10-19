@@ -630,7 +630,7 @@ async function loadImg(el){
       }
       itTitle=wikiCache[t+'|it'];
     }catch(e){}
-    const itUrl=itTitle?'https://it.wikipedia.org/wiki/'+encodeURIComponent(itTitle.replace(/ /g,'_')):'https://it.wikipedia.org/w/index.php?search='+encodeURIComponent((j.title||t).replace(/_/g,' '));
+    const itUrl=itTitle?'https://it.wikipedia.org/wiki/'+encodeURIComponent(itTitle.replace(/ /g,'_')):((j.content_urls&&j.content_urls.desktop&&j.content_urls.desktop.page)||'https://en.wikipedia.org/wiki/'+encodeURIComponent(t));
     const capTitle=itTitle||j.title||'';
     const src=j.originalimage&&j.originalimage.source?(j.thumbnail&&j.thumbnail.source?j.thumbnail.source.replace(/\/\d+px-/,'/960px-'):j.originalimage.source):(j.thumbnail&&j.thumbnail.source);
     if(src){
