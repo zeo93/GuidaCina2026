@@ -1,6 +1,6 @@
 /* Service worker: la guida funziona offline dopo la prima visita online */
-const VERSION = 'cina2026-v2';
-const SHELL = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png', './apple-touch-icon.png'];
+const VERSION = 'cina2026-v3';
+const SHELL = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png', './apple-touch-icon.png', './panda-altalena.gif'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(VERSION).then(c => c.addAll(SHELL)).then(() => self.skipWaiting()));
