@@ -165,7 +165,34 @@ details[open]>summary .chev{transform:rotate(90deg)}
 .eggbox{position:relative;background:#fff;color:#111;border-radius:18px;padding:14px;text-align:center;max-width:94vw;box-shadow:0 10px 40px rgba(0,0,0,.5);animation:pop .3s}
 .eggbox img{max-width:100%;height:auto;border-radius:12px;display:block}
 .eggbox .ix{position:absolute;top:-10px;right:-10px;width:32px;height:32px;border-radius:50%;border:0;background:#c4501a;color:#fff;font-size:1rem;cursor:pointer}
-.eggtxt{margin-top:8px;font-weight:700}
+.eggtxt{margin-top:8px;font-weight:700;font-size:1.1rem}
+.eggbox{min-width:260px;max-width:min(92vw,380px)}
+.eggicon{width:180px;height:180px}
+.eggicon-wrap{position:relative;display:inline-block}
+.eggp{margin:8px 0 0;font-size:.95rem}
+.eggul{text-align:left;margin:8px auto;padding-left:22px;display:inline-block}
+.eggrow{display:flex;gap:8px;justify-content:center;margin-top:10px;flex-wrap:wrap}
+.eggzh{font-size:3rem;font-weight:800;line-height:1.2;margin-top:4px}
+.eggpy{font-size:1.2rem;color:#555}
+.anim-itinerario{animation:wobble 1.2s ease-in-out infinite}
+.anim-avvertenze{animation:shake .5s infinite}
+.anim-contatti{animation:ring .6s infinite}
+.anim-hotel{animation:bob 2.5s ease-in-out infinite}
+.anim-checklist{animation:bob 1s ease-in-out infinite}
+.anim-frasi{animation:wobble 1.6s ease-in-out infinite}
+@keyframes wobble{0%,100%{transform:rotate(-6deg)}50%{transform:rotate(6deg)}}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+@keyframes ring{0%,100%{transform:rotate(0)}20%{transform:rotate(-8deg)}40%{transform:rotate(8deg)}60%{transform:rotate(-8deg)}80%{transform:rotate(8deg)}}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.zz{position:absolute;right:-6px;top:20px;font-weight:800;color:#1f5c8b;opacity:0;animation:zz 2.4s infinite}
+.z2{animation-delay:.8s}.z3{animation-delay:1.6s}
+@keyframes zz{0%{opacity:0;transform:translate(0,0) scale(.6)}30%{opacity:1}100%{opacity:0;transform:translate(24px,-50px) scale(1.5)}}
+.confetto{position:fixed;top:-12px;width:9px;height:14px;z-index:210;animation:fall linear forwards;pointer-events:none}
+@keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
+.flyer{position:fixed;top:30%;left:-220px;z-index:210;pointer-events:none;display:flex;align-items:center;gap:6px;animation:fly 5s linear forwards}
+.flyicon{width:120px;height:120px}
+.flytxt{background:#fff;color:#111;border-radius:14px;padding:6px 12px;font-weight:700;box-shadow:0 4px 14px rgba(0,0,0,.25);white-space:nowrap}
+@keyframes fly{to{transform:translateX(calc(100vw + 520px))}}
 @keyframes pop{from{transform:scale(.6);opacity:0}to{transform:none;opacity:1}}
 .food{background:var(--warn-soft);border-radius:10px;padding:8px 12px;margin:10px 0;font-size:.92rem}
 .food ul{margin:4px 0 0;padding-left:18px}
@@ -297,7 +324,7 @@ footer{text-align:center;color:var(--muted);font-size:.82rem;padding:0 16px 40px
   <div id="installBody"></div>
   <div class="irow"><button class="btn" id="installLater">Non ora</button><button class="btn fill" id="installGo" style="display:none">Aggiungi</button></div>
 </div>
-<div id="egg" class="egg" role="dialog" aria-label="Sorpresa"><div class="eggbox"><button id="eggX" class="ix" aria-label="Chiudi">✕</button><img src="panda-altalena.gif" alt="Un panda sull'altalena" width="300" height="300"><div class="eggtxt">🐼 Wheeeee! Buon viaggio!</div></div></div>
+<div id="egg" class="egg" role="dialog" aria-label="Sorpresa"><div class="eggbox"><button id="eggX" class="ix" aria-label="Chiudi">✕</button><div id="eggContent"></div></div></div>
 <div id="taxi" class="overlay"><button id="taxiClose" class="btn">✖ Chiudi</button><div id="taxiBody"></div></div>
 <footer><p style="font-weight:700;color:var(--ink);margin:0 0 6px">🐼 Guida interattiva creata da Marco Lanuti</p>Guida digitale ricavata dal libretto cartaceo del tour.
 <div style="margin-top:12px"><button class="btn" id="offlineBtn">⬇️ Salva tutto per l'uso offline</button><div class="small" id="offlineMsg" style="margin-top:6px"></div></div>
@@ -858,15 +885,57 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-fun]');if(
 (async()=>{try{const r=await fetch('https://en.wikipedia.org/api/rest_v1/page/summary/Giant_panda');const j=await r.json();
   const s=j.thumbnail&&j.thumbnail.source;if(s){const im=new Image();im.onload=()=>{const h=$('#heroPanda');h.style.backgroundImage=`url("${s}")`;h.textContent=''};im.src=s}}catch(e){}})();
 
-/* easter egg: doppio clic/tocco sul panda dei titoli */
+/* easter egg: doppio clic/tocco su ogni panda (uno diverso per sezione) */
 (function(){
-  let last=0;
-  const egg=$('#egg'),close=()=>egg.classList.remove('on');
+  const egg=$('#egg'),box=$('#eggContent'),close=()=>egg.classList.remove('on');
+  const big=k=>SECTION_ICONS[k].replace('class="pk big"','class="eggicon anim-'+k+'"');
+  const todayIso=()=>new Date().toISOString().slice(0,10);
+  const fd=d=>{const f=fmt(d.date);return f.d+' '+f.m};
+  const flat=PHRASES.flatMap(p=>p[1]);
+  function phrase(){const p=flat[Math.floor(Math.random()*flat.length)];
+    return `<div class="eggicon-wrap">${big('frasi')}</div><div class="eggzh">${p[1]}</div><div class="eggpy">${esc(p[2])}</div><div class="eggtxt">${esc(p[0])}</div><div class="eggrow"><button class="btn" data-say="${esc(p[1])}">🔊 Ascolta</button><button class="btn fill" id="eggAgain">🔁 Un'altra frase</button></div>`}
+  function confetti(){
+    const cols=['#c4501a','#e39a2c','#2e7d4f','#1f5c8b','#d93a2b','#222'];
+    for(let i=0;i<50;i++){const c=document.createElement('i');c.className='confetto';
+      c.style.cssText=`left:${Math.random()*100}vw;background:${cols[i%cols.length]};animation-delay:${Math.random()*.8}s;animation-duration:${2+Math.random()*1.6}s`;
+      document.body.appendChild(c);setTimeout(()=>c.remove(),4500)}
+  }
+  function flyPlane(){
+    const f=document.createElement('div');f.className='flyer';
+    f.innerHTML=SECTION_ICONS.voli.replace('class="pk big"','class="flyicon"')+'<div class="flytxt">Allacciate le cinture! 🐼✈️</div>';
+    document.body.appendChild(f);setTimeout(()=>f.remove(),5200);
+  }
+  const EGGS={
+    swing:()=>`<img src="panda-altalena.gif" alt="Un panda sull'altalena" width="300" height="300"><div class="eggtxt">🐼 Wheeeee! Buon viaggio!</div>`,
+    itinerario:()=>{const n=DAYS.find(d=>d.date>=todayIso());
+      return `<div class="eggicon-wrap">${big('itinerario')}</div><div class="eggtxt">🧭 Esploratore panda in missione!</div><p class="eggp">${n?`Prossima tappa: <b>Giorno ${n.n} · ${esc(n.title)}</b> (${fd(n)})`:'Missione compiuta! Che viaggio, panda!'}</p>`},
+    voli:()=>{flyPlane();return null},
+    hotel:()=>{const n=DAYS.find(d=>d.date>=todayIso()&&d.hotel);
+      return `<div class="eggicon-wrap">${big('hotel')}<span class="zz z1">z</span><span class="zz z2">Z</span><span class="zz z3">z</span></div><div class="eggtxt">😎 Pisolino al sole in corso…</div><p class="eggp">${n?`Prossimo letto: <b>${esc(n.hotel[0])}</b> (${n.city==='Roma'?'':esc(n.city)}, dal ${fd(n)})`:'Hotel finiti: solo ricordi da qui!'}</p>`},
+    avvertenze:()=>`<div class="eggicon-wrap">${big('avvertenze')}</div><div class="eggtxt">⚠️ Il panda ti ricorda…</div><ul class="eggul"><li>🛂 Arrival Card compilata?</li><li>🔋 Power bank con marchio CCC?</li><li>📱 VPN o eSIM pronte?</li></ul><div class="eggrow"><button class="btn fill" id="eggGoCheck">✅ Vai alla checklist</button></div>`,
+    contatti:()=>`<div class="eggicon-wrap">${big('contatti')}</div><div class="eggtxt">📞 Pronto? 你好!</div><p class="eggp">Numeri di emergenza in Cina:<br><b>110</b> polizia · <b>120</b> ambulanza · <b>119</b> vigili del fuoco</p>`,
+    checklist:()=>{confetti();const n=CHECKS.filter((_,i)=>checked[i]).length,left=CHECKS.length-n,nx=CHECKS.find((_,i)=>!checked[i]);
+      return `<div class="eggicon-wrap">${big('checklist')}</div><div class="eggtxt">${left?`🎒 Fatte ${n} su ${CHECKS.length}`:'🎉 Valigia pronta!'}</div><p class="eggp">${left?`Prossima da fare: <b>${esc(nx)}</b>`:'Tutto spuntato: buon viaggio!'}</p>`},
+    frasi:()=>{const h=phrase();return h}
+  };
+  function open(key){
+    gc('easter-egg-'+key);
+    const html=EGGS[key]();if(html===null)return;
+    box.innerHTML=html;egg.classList.add('on');
+    const s=box.querySelector('[data-say]');if(s&&'speechSynthesis' in window){try{const u=new SpeechSynthesisUtterance(s.dataset.say);u.lang='zh-CN';speechSynthesis.cancel();speechSynthesis.speak(u)}catch(_){}}
+  }
+  let last=0,lastKey='';
   document.addEventListener('click',e=>{
     if(e.target.closest('#eggX')||e.target===egg){close();return}
-    if(!e.target.closest('.pk'))return;
+    if(e.target.closest('#eggAgain')){box.innerHTML=phrase();const s=box.querySelector('[data-say]');if(s&&'speechSynthesis' in window){try{const u=new SpeechSynthesisUtterance(s.dataset.say);u.lang='zh-CN';speechSynthesis.cancel();speechSynthesis.speak(u)}catch(_){}}return}
+    if(e.target.closest('#eggGoCheck')){close();showTab('checklist',true);history.replaceState(null,'','#checklist');return}
+    let key=null;
+    const pk=e.target.closest('.pk');
+    if(pk){const sec=pk.closest('section');key=sec&&EGGS[sec.id]?sec.id:'swing'}
+    else if(e.target.closest('#heroPanda'))key='swing';
+    if(!key)return;
     const now=Date.now();
-    if(now-last<450){last=0;const im=egg.querySelector('img');im.src=im.src;egg.classList.add('on');gc('easter-egg')}else last=now;
+    if(now-last<450&&lastKey===key){last=0;open(key)}else{last=now;lastKey=key}
   });
   document.addEventListener('keydown',e=>{if(e.key==='Escape')close()});
 })();
