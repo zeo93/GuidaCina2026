@@ -1,5 +1,5 @@
 /* Service worker: la guida funziona offline dopo la prima visita online */
-const VERSION = 'cina2026-v6';
+const VERSION = 'cina2026-v7';
 const SHELL = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png', './apple-touch-icon.png', './panda-altalena.gif'];
 
 self.addEventListener('install', e => {

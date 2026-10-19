@@ -620,11 +620,23 @@ async function loadImg(el){
       wikiCache[t]=await r.json();
     }
     const j=wikiCache[t];
+    /* titolo e link della voce in italiano (se esiste), altrimenti ricerca su it.wikipedia */
+    let itTitle=null;
+    try{
+      if(!(t+'|it' in wikiCache)){
+        const r2=await fetch('https://en.wikipedia.org/w/api.php?action=query&format=json&formatversion=2&origin=*&prop=langlinks&lllang=it&redirects=1&titles='+encodeURIComponent(t));
+        const q=await r2.json();const p=q.query&&q.query.pages&&q.query.pages[0];
+        wikiCache[t+'|it']=p&&p.langlinks&&p.langlinks[0]?p.langlinks[0].title:null;
+      }
+      itTitle=wikiCache[t+'|it'];
+    }catch(e){}
+    const itUrl=itTitle?'https://it.wikipedia.org/wiki/'+encodeURIComponent(itTitle.replace(/ /g,'_')):'https://it.wikipedia.org/w/index.php?search='+encodeURIComponent((j.title||t).replace(/_/g,' '));
+    const capTitle=itTitle||j.title||'';
     const src=j.originalimage&&j.originalimage.source?(j.thumbnail&&j.thumbnail.source?j.thumbnail.source.replace(/\/\d+px-/,'/960px-'):j.originalimage.source):(j.thumbnail&&j.thumbnail.source);
     if(src){
       const im=new Image();
       im.onload=()=>{h.style.backgroundImage=`url("${src}")`;h.querySelector('.emo').style.display='none';
-        h.querySelector('.cap').innerHTML='📷 '+esc(j.title||'')+' · <a style="color:#fff" target="_blank" rel="noopener" href="'+esc((j.content_urls&&j.content_urls.desktop.page)||'#')+'">Wikipedia ↗</a>'};
+        h.querySelector('.cap').innerHTML='📷 '+esc(capTitle)+' · <a style="color:#fff" target="_blank" rel="noopener" href="'+esc(itUrl)+'">Wikipedia ↗</a>'};
       im.src=src;
     }
   }catch(e){/* offline: resta il gradiente con emoji */}
