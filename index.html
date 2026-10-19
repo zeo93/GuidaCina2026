@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#b8450f">
+<script data-goatcounter="https://zeo93.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="icon-192.png">
@@ -299,6 +300,7 @@ footer{text-align:center;color:var(--muted);font-size:.82rem;padding:0 16px 40px
 <div id="taxi" class="overlay"><button id="taxiClose" class="btn">✖ Chiudi</button><div id="taxiBody"></div></div>
 <footer><p style="font-weight:700;color:var(--ink);margin:0 0 6px">🐼 Guida interattiva creata da Marco Lanuti</p>Guida digitale ricavata dal libretto cartaceo del tour.
 <div style="margin-top:12px"><button class="btn" id="offlineBtn">⬇️ Salva tutto per l'uso offline</button><div class="small" id="offlineMsg" style="margin-top:6px"></div></div>
+<div class="small" style="margin-top:8px">Statistiche di utilizzo anonime, senza cookie.</div>
 <div class="small" style="margin-top:8px">Su iPhone: Safari → Condividi → "Aggiungi alla schermata Home". Su Android: menu ⋮ → "Installa app".</div></footer>
 
 <script>
@@ -306,6 +308,10 @@ footer{text-align:center;color:var(--muted);font-size:.82rem;padding:0 16px 40px
 const ls={get(k,d){try{const v=localStorage.getItem(k);return v===null?d:JSON.parse(v)}catch(e){return d}},
           set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
 const M=q=>'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(q);
+/* statistiche anonime (GoatCounter): eventi di utilizzo */
+function gc(n){const f=()=>window.goatcounter&&window.goatcounter.count&&(window.goatcounter.count({path:n,title:n,event:true}),true);try{if(!f())setTimeout(f,3000)}catch(e){}}
+try{if(matchMedia('(display-mode: standalone)').matches||navigator.standalone===true){if(!sessionStorage.getItem('gcApp')){sessionStorage.setItem('gcApp','1');gc('app-aperta-da-home')}}}catch(e){}
+window.addEventListener('appinstalled',()=>gc('app-installata'));
 
 const DAYS=[
 {n:1,date:'2026-10-27',city:'Roma',title:'Roma → Pechino',emoji:'✈️',wiki:'Leonardo_da_Vinci–Fiumicino_Airport',
@@ -665,7 +671,7 @@ function showTaxi(i){
   $('#taxi').classList.add('on');
 }
 document.addEventListener('click',e=>{
-  const t=e.target.closest('[data-taxi]');if(t)showTaxi(t.dataset.taxi);
+  const t=e.target.closest('[data-taxi]');if(t){showTaxi(t.dataset.taxi);gc('mostra-tassista')}
   const ed=e.target.closest('[data-editad]');if(ed){const i=ed.dataset.editad;const v=prompt('Indirizzo in cinese (copialo dai documenti di prenotazione):',hAddr(i)||'');if(v!==null){ls.set('hadd'+i,v.trim()||null);paintAddr()}}
   if(e.target.closest('#taxiClose'))$('#taxi').classList.remove('on');
 });
@@ -809,6 +815,7 @@ function downloadIcs(list,name){
   setTimeout(()=>URL.revokeObjectURL(url),10000);
 }
 document.addEventListener('click',e=>{const b=e.target.closest('[data-ics]');if(!b)return;
+  gc(b.dataset.ics==='all'?'calendario-tutto':'calendario-giorno');
   if(b.dataset.ics==='all')downloadIcs(DAYS,'cina-2026-itinerario.ics');
   else{const d=DAYS.find(x=>x.n==b.dataset.ics);downloadIcs([d],'cina-2026-giorno-'+d.n+'.ics')}});
 
@@ -842,7 +849,7 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-fun]');if(
     if(e.target.closest('#eggX')||e.target===egg){close();return}
     if(!e.target.closest('.pk'))return;
     const now=Date.now();
-    if(now-last<450){last=0;const im=egg.querySelector('img');im.src=im.src;egg.classList.add('on')}else last=now;
+    if(now-last<450){last=0;const im=egg.querySelector('img');im.src=im.src;egg.classList.add('on');gc('easter-egg')}else last=now;
   });
   document.addEventListener('keydown',e=>{if(e.key==='Escape')close()});
 })();
@@ -859,7 +866,7 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-fun]');if(
   $('#installX').onclick=()=>hide(true);$('#installLater').onclick=()=>hide(true);
   if(!isMobile||standalone||!/^https?:$/.test(location.protocol))return;
   window.addEventListener('appinstalled',()=>hide(false));
-  const open=()=>{if(snoozed())return;setTimeout(()=>pop.classList.add('on'),4000)};
+  const open=()=>{if(snoozed())return;setTimeout(()=>{pop.classList.add('on');gc('popup-installa-mostrato')},4000)};
   if(isIOS){
     $('#installBody').innerHTML='<ol><li>Tocca il pulsante Condividi <span class="shareic">⬆︎</span> in basso (o in alto) nel browser</li><li>Scorri e scegli <b>"Aggiungi alla schermata Home"</b></li><li>Tocca <b>Aggiungi</b></li></ol><div class="small muted">Funziona con Safari. Se usi un altro browser, apri prima questa pagina in Safari.</div>';
     open();
@@ -869,7 +876,7 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-fun]');if(
       $('#installBody').innerHTML='<div class="small">Tocca "Aggiungi" per installare la guida sul telefono.</div>';
       $('#installGo').style.display='';open();
     });
-    $('#installGo').onclick=async()=>{if(!deferred)return;deferred.prompt();await deferred.userChoice;deferred=null;hide(false)};
+    $('#installGo').onclick=async()=>{if(!deferred)return;gc('installa-click');deferred.prompt();await deferred.userChoice;deferred=null;hide(false)};
     setTimeout(()=>{if(!deferred&&!pop.classList.contains('on')&&!snoozed()){
       $('#installBody').innerHTML='<ol><li>Tocca il menu <b>⋮</b> del browser</li><li>Scegli <b>"Installa app"</b> oppure <b>"Aggiungi a schermata Home"</b></li></ol>';pop.classList.add('on')}},6000);
   }
@@ -892,7 +899,7 @@ async function saveOffline(auto){
   }catch(e){msg.textContent='Download non completato: riprova con una connessione migliore.'}
   btn.disabled=false;
 }
-$('#offlineBtn').onclick=()=>saveOffline(false);
+$('#offlineBtn').onclick=()=>{gc('salva-offline');saveOffline(false)};
 if(ls.get('offlineDone',0))$('#offlineMsg').textContent='✔️ Contenuti già salvati per l\'uso offline.';
 else setTimeout(()=>saveOffline(true),5000);
 

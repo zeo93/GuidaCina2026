@@ -1,5 +1,5 @@
 /* Service worker: la guida funziona offline dopo la prima visita online */
-const VERSION = 'cina2026-v9';
+const VERSION = 'cina2026-v10';
 const SHELL = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png', './apple-touch-icon.png', './panda-altalena.gif'];
 
 self.addEventListener('install', e => {
@@ -17,6 +17,9 @@ self.addEventListener('fetch', e => {
   const req = e.request;
   if (req.method !== 'GET') return;
   const url = new URL(req.url);
+
+  // Statistiche: sempre dalla rete, mai dalla copia salvata
+  if (url.hostname.endsWith('goatcounter.com') || url.hostname === 'gc.zgo.at') return;
 
   // Pagina e file del sito: prima la rete (per avere gli aggiornamenti), altrimenti la copia salvata
   if (url.origin === location.origin) {
