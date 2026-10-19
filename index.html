@@ -1,0 +1,798 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#b8450f">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Cina 2026">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<title>Cina Classica con i Panda</title>
+<style>
+:root{
+  --bg:#faf6f0;--card:#fff;--ink:#231f1a;--muted:#6b6258;--line:#e8dfd2;
+  --accent:#c4501a;--accent2:#1f5c8b;--accent-soft:#fbe9dd;--blue-soft:#e3eef7;
+  --ok:#2e7d4f;--warn:#b7791f;--warn-soft:#fff3d6;--danger:#b3261e;--danger-soft:#fde8e6;
+  --shadow:0 1px 3px rgba(60,40,10,.08),0 6px 18px rgba(60,40,10,.06);
+}
+:root[data-theme="dark"]{
+  --bg:#17140f;--card:#211d17;--ink:#f1ebe2;--muted:#a89f92;--line:#383229;
+  --accent:#ff8a50;--accent2:#6fb3e6;--accent-soft:#3a2417;--blue-soft:#18293a;
+  --ok:#6cc58d;--warn:#e8b04a;--warn-soft:#3a2f14;--danger:#ff8a80;--danger-soft:#3b1b19;
+  --shadow:0 1px 3px rgba(0,0,0,.4);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:120px}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-text-size-adjust:100%}
+a{color:var(--accent2)}
+header.hero{background:#5b2333;color:#fff;padding:34px 16px 30px;overflow:hidden;min-height:260px}
+header.hero .wrap{position:relative;z-index:2}
+.herobg{position:absolute;inset:0;z-index:0}
+.herobg svg{width:100%;height:100%;display:block}
+header.hero:after{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(90deg,rgba(40,12,20,.72),rgba(40,12,20,.25) 65%,rgba(40,12,20,0))}
+.hero h1,.hero p,.hero .pill{text-shadow:0 1px 6px rgba(0,0,0,.45)}
+@media(max-width:700px){
+  header.hero{padding:16px 12px 14px;min-height:0}
+  header.hero:after{background:linear-gradient(180deg,rgba(40,12,20,.55),rgba(40,12,20,.2))}
+  .heroin{gap:8px}
+  .heropanda{width:64px;height:64px;font-size:2rem;border-width:3px}
+  .hero h1{font-size:1.3rem}
+  .hero p{font-size:.82rem}
+  .bamboo{display:none}
+  .hero .row{gap:6px;margin-top:10px}
+  .pill{padding:5px 9px;font-size:.75rem;flex:1 1 40%}
+  .pill b{font-size:.95rem}
+}
+.wrap{max-width:980px;margin:0 auto}
+.hero h1{margin:0 0 4px;font-size:clamp(1.6rem,5vw,2.4rem);letter-spacing:-.5px}
+.hero p{margin:0;opacity:.92}
+.hero .row{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px;align-items:stretch}
+.pill{background:rgba(255,255,255,.18);backdrop-filter:blur(4px);border-radius:12px;padding:8px 14px;font-size:.92rem}
+.pill b{display:block;font-size:1.25rem;line-height:1.2}
+.themebtn{position:absolute;right:14px;top:12px;background:rgba(255,255,255,.2);border:0;color:#fff;border-radius:999px;width:38px;height:38px;font-size:1.1rem;cursor:pointer}
+header.hero{position:relative}
+nav.tabs{position:sticky;top:0;z-index:20;background:var(--card);border-bottom:1px solid var(--line);box-shadow:var(--shadow)}
+nav.tabs .wrap{display:flex;overflow-x:auto;scrollbar-width:none;padding:0 8px}
+nav.tabs a{flex:none;padding:13px 13px;text-decoration:none;color:var(--muted);font-weight:600;font-size:.94rem;border-bottom:3px solid transparent;white-space:nowrap}
+nav.tabs a.on{color:var(--accent);border-bottom-color:var(--accent)}
+main{padding:18px 14px 80px}
+section{margin-bottom:34px;display:none}
+section.active{display:block;animation:fade .25s}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+h2 .pk{margin-left:auto;width:46px;height:46px;flex:none}
+#wxCity{background:rgba(0,0,0,.25);color:#fff;border:0;border-radius:6px;font:inherit;font-size:.85rem;padding:1px 4px;margin-left:4px}
+#wxCity option{color:#000}
+.wxline{font-size:.9rem;background:var(--blue-soft);border-radius:8px;padding:6px 10px;margin:8px 0;display:none}
+.wxline.on{display:block}
+.heroin{display:flex;align-items:center;gap:16px;justify-content:space-between}
+.heropanda{width:110px;height:110px;border-radius:50%;border:4px solid rgba(255,255,255,.7);background:#fff center/cover no-repeat;flex:none;display:flex;align-items:center;justify-content:center;font-size:3.6rem;box-shadow:0 4px 14px rgba(0,0,0,.3)}
+.bamboo{font-size:.9rem;opacity:.85;letter-spacing:3px;margin-top:6px}
+.funbtn{margin-left:8px}
+.funbox{display:none;margin-top:12px;background:var(--blue-soft);border-radius:14px;padding:12px;gap:12px;align-items:center}
+.funbox.on{display:flex}
+.funbox svg{width:130px;height:140px;flex:none}
+.funbox p{margin:0;font-size:.95rem}
+.funbox ul{margin:0;padding-left:18px}
+@media(max-width:520px){.funbox{flex-direction:column;text-align:left}.heropanda{width:80px;height:80px;font-size:2.6rem}}
+h2{font-size:1.45rem;margin:0 0 12px;display:flex;align-items:center;gap:8px}
+h3{margin:0 0 6px;font-size:1.08rem}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow)}
+.muted{color:var(--muted)}
+.small{font-size:.88rem}
+/* filtri */
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 14px}
+.chip{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:6px 13px;font-size:.88rem;cursor:pointer;font-family:inherit}
+.chip.on{background:var(--accent);border-color:var(--accent);color:#fff}
+/* giorni */
+.day{margin-bottom:14px;overflow:hidden;scroll-margin-top:110px}
+.day.today{outline:3px solid var(--accent)}
+.day>summary{list-style:none;cursor:pointer;display:flex;gap:12px;align-items:center;padding:12px 14px}
+.day>summary::-webkit-details-marker{display:none}
+.dnum{flex:none;width:52px;height:52px;border-radius:12px;background:var(--accent);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.05}
+.dnum b{font-size:1.3rem}.dnum span{font-size:.62rem;text-transform:uppercase;letter-spacing:.5px}
+.dh{flex:1;min-width:0}
+.dh .t{font-weight:700}
+.dh .s{font-size:.85rem;color:var(--muted)}
+.chev{transition:transform .2s;color:var(--muted)}
+details[open]>summary .chev{transform:rotate(90deg)}
+.dbody{padding:0 14px 16px}
+.hero-img{height:190px;border-radius:12px;background-size:cover;background-position:center;position:relative;margin-bottom:12px;display:flex;align-items:flex-end;overflow:hidden}
+.hero-img .emo{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:4.5rem;opacity:.9}
+.hero-img .cap{position:relative;width:100%;padding:18px 12px 8px;color:#fff;font-size:.8rem;background:linear-gradient(transparent,rgba(0,0,0,.65))}
+.meals{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
+.meal{font-size:.8rem;border-radius:8px;padding:3px 9px;background:var(--blue-soft);color:var(--accent2);font-weight:600}
+.meal.no{background:transparent;border:1px dashed var(--line);color:var(--muted);font-weight:400}
+.hotel{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;background:var(--accent-soft);border-radius:10px;padding:10px 12px;margin:10px 0}
+.btn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--accent2);color:var(--accent2);background:transparent;border-radius:9px;padding:7px 12px;font-size:.87rem;text-decoration:none;cursor:pointer;font-family:inherit;font-weight:600}
+.btn.fill{background:var(--accent2);color:#fff}
+.places{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+.mapbox{margin-top:10px}
+.mapbox iframe{width:100%;height:320px;border:0;border-radius:10px}
+.note{border-left:4px solid var(--warn);background:var(--warn-soft);padding:9px 12px;border-radius:8px;font-size:.9rem;margin:10px 0}
+.todo{display:flex;align-items:center;gap:8px;margin-top:12px;font-size:.9rem;color:var(--muted)}
+/* voli */
+.flight{display:grid;grid-template-columns:auto 1fr auto;gap:10px 14px;align-items:center;padding:14px;margin-bottom:10px}
+.fcode{font-weight:800;background:var(--accent);color:#fff;border-radius:8px;padding:6px 10px}
+.route{display:flex;align-items:center;gap:10px;justify-content:center;text-align:center}
+.route .ap b{font-size:1.4rem;display:block;line-height:1.1}
+.route .line{flex:1;border-top:2px dashed var(--line);position:relative;min-width:30px}
+.route .line:after{content:"✈";position:absolute;left:50%;top:-12px;transform:translateX(-50%);background:var(--card);padding:0 4px}
+.ftime{text-align:right;font-size:.9rem}
+@media(max-width:560px){.flight{grid-template-columns:1fr}.ftime{text-align:left}}
+/* hotel */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+.hcard{padding:0;overflow:hidden}
+.hb{padding:14px}
+.himg{height:160px;background:linear-gradient(135deg,#8c1d18,#e39a2c) center/cover;position:relative;display:flex;align-items:flex-end}
+.himg .emo{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:3.5rem}
+.himg .cap{position:relative;width:100%;padding:16px 10px 6px;color:#fff;font-size:.75rem;background:linear-gradient(transparent,rgba(0,0,0,.65))}
+/* avvertenze */
+.search{width:100%;padding:11px 14px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--ink);font-size:1rem;margin-bottom:12px;font-family:inherit}
+.adv{margin-bottom:10px;overflow:hidden}
+.adv>summary{list-style:none;cursor:pointer;padding:13px 14px;font-weight:700;display:flex;gap:10px;align-items:center}
+.adv>summary::-webkit-details-marker{display:none}
+.adv>summary .chev{margin-left:auto}
+.adv.hi>summary{background:var(--accent-soft)}
+.adv.crit>summary{background:var(--danger-soft)}
+.adv .ab{padding:2px 16px 14px}
+.adv .ab ul,.adv .ab ol{padding-left:20px;margin:6px 0}
+.adv .ab li{margin:3px 0}
+/* checklist */
+.check{display:flex;gap:10px;align-items:flex-start;padding:10px 14px;border-bottom:1px solid var(--line)}
+.check:last-child{border:0}
+.check input,.todo input{width:20px;height:20px;accent-color:var(--accent);flex:none;margin-top:2px}
+.check.done span{text-decoration:line-through;color:var(--muted)}
+.bar{height:8px;background:var(--line);border-radius:99px;overflow:hidden;margin:6px 0 14px}
+.bar i{display:block;height:100%;background:var(--ok);width:0;transition:width .3s}
+.food{background:var(--warn-soft);border-radius:10px;padding:8px 12px;margin:10px 0;font-size:.92rem}
+.food ul{margin:4px 0 0;padding-left:18px}
+.cnaddr{margin:8px 0 10px;padding:8px 10px;background:var(--blue-soft);border-radius:8px}
+.cnname{font-weight:700;font-size:1.1rem}
+.taxibtn{margin-right:6px}
+.overlay{display:none;position:fixed;inset:0;z-index:100;background:#fff;color:#111;padding:16px;overflow:auto;text-align:center}
+.overlay.on{display:block}
+.overlay #taxiClose{position:absolute;top:12px;right:12px}
+#taxiBody{max-width:900px;margin:50px auto 0}
+.tx1{font-size:1.6rem;font-weight:700;margin-bottom:24px}.tx1 small{font-size:.9rem;font-weight:400;color:#555}
+.tx2{font-size:clamp(2.2rem,9vw,4.5rem);font-weight:800;line-height:1.2;margin-bottom:16px}
+.tx3{font-size:clamp(1.4rem,6vw,2.4rem);margin-bottom:16px}
+.tx4{font-size:1rem;color:#555;margin-bottom:20px}
+.phrase{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid var(--line)}
+.phrase:last-child{border:0}
+.zh{font-size:1.25rem;font-weight:700}
+.pa{display:flex;gap:6px;flex:none}
+.pa .btn{padding:6px 9px}
+.contact{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:12px 14px;border-bottom:1px solid var(--line)}
+.contact:last-child{border:0}
+.sos{background:var(--danger);color:#fff;border-color:var(--danger)}
+footer{text-align:center;color:var(--muted);font-size:.82rem;padding:0 16px 40px}
+@media print{nav.tabs,.themebtn,.btn,.filters,.search{display:none}details:not([open])>*:not(summary){display:block}.day,.adv{break-inside:avoid}}
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="herobg" aria-hidden="true"><svg viewBox="0 0 1200 320" preserveAspectRatio="xMaxYMax slice">
+   <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4a1f3d"/><stop offset=".5" stop-color="#c4501a"/><stop offset="1" stop-color="#f6c571"/></linearGradient>
+    <g id="pd"><ellipse cx="-25" cy="-8" rx="13" ry="10" fill="#222"/><ellipse cx="25" cy="-8" rx="13" ry="10" fill="#222"/>
+      <ellipse cx="0" cy="-32" rx="31" ry="30" fill="#fff"/><ellipse cx="-28" cy="-36" rx="9" ry="17" fill="#222" transform="rotate(20 -28 -36)"/><ellipse cx="28" cy="-36" rx="9" ry="17" fill="#222" transform="rotate(-20 28 -36)"/>
+      <circle cx="0" cy="-76" r="24" fill="#fff"/><circle cx="-19" cy="-96" r="8" fill="#222"/><circle cx="19" cy="-96" r="8" fill="#222"/>
+      <ellipse cx="-9" cy="-78" rx="6" ry="8" fill="#222" transform="rotate(25 -9 -78)"/><ellipse cx="9" cy="-78" rx="6" ry="8" fill="#222" transform="rotate(-25 9 -78)"/>
+      <circle cx="-8" cy="-79" r="1.8" fill="#fff"/><circle cx="8" cy="-79" r="1.8" fill="#fff"/><ellipse cx="0" cy="-69" rx="4" ry="3" fill="#222"/></g>
+   </defs>
+   <rect width="1200" height="320" fill="url(#sky)"/>
+   <circle cx="930" cy="105" r="52" fill="#ffe7ae" opacity=".9"/>
+   <path d="M0 215 L60 150 L110 205 L190 120 L260 210 L330 160 L400 215 L470 140 L540 215 L1200 215 L1200 320 L0 320Z" fill="#7a4a63" opacity=".55"/>
+   <path d="M0 250 C60 170 110 170 150 250 C200 130 270 130 320 250 C380 160 440 160 500 250 C560 180 620 170 680 250 C740 150 800 150 860 250 C920 170 980 170 1040 250 C1100 180 1150 180 1200 240 L1200 320 L0 320Z" fill="#3f5c5a" opacity=".8"/>
+   <path d="M0 280 C80 220 140 220 210 280 C290 200 360 210 440 280 C520 220 600 220 680 280 C760 210 840 220 920 280 C1000 220 1080 220 1200 275 L1200 320 L0 320Z" fill="#26403d"/>
+   <g fill="#6b2a2a"><rect x="690" y="215" width="60" height="45"/><polygon points="670,215 770,215 745,195 695,195"/><rect x="700" y="170" width="40" height="25"/><polygon points="685,170 755,170 735,152 705,152"/><rect x="710" y="132" width="20" height="20"/><polygon points="700,132 740,132 720,112"/></g>
+   <g fill="#2f6b43"><rect x="40" y="0" width="9" height="320"/><rect x="75" y="0" width="7" height="320" opacity=".8"/><rect x="1120" y="0" width="9" height="320"/><rect x="1155" y="0" width="7" height="320" opacity=".8"/>
+     <g fill="#9fd08a"><rect x="38" y="70" width="13" height="4"/><rect x="38" y="160" width="13" height="4"/><rect x="38" y="250" width="13" height="4"/><rect x="73" y="110" width="11" height="3"/><rect x="73" y="220" width="11" height="3"/><rect x="1118" y="90" width="13" height="4"/><rect x="1118" y="190" width="13" height="4"/><rect x="1153" y="130" width="11" height="3"/><rect x="1153" y="240" width="11" height="3"/></g>
+     <ellipse cx="100" cy="80" rx="30" ry="7" transform="rotate(-25 100 80)"/><ellipse cx="22" cy="130" rx="30" ry="7" transform="rotate(25 22 130)"/><ellipse cx="1098" cy="70" rx="30" ry="7" transform="rotate(-20 1098 70)"/><ellipse cx="1175" cy="150" rx="30" ry="7" transform="rotate(25 1175 150)"/></g>
+   <use href="#pd" transform="translate(1040 318) scale(1.05)"/>
+   <use href="#pd" transform="translate(940 318) scale(.7)"/>
+   <use href="#pd" transform="translate(500 318) scale(.55)"/>
+  </svg></div>
+  <div class="wrap">
+    <div class="heroin"><div>
+    <h1>🐼 CINA CLASSICA CON I PANDA</h1>
+    <p>Pechino · Xi'an · Chengdu · Guilin · Shanghai &nbsp;|&nbsp; 27 ott – 8 nov 2026 &nbsp;|&nbsp; 13 giorni</p>
+    <div class="bamboo">🎋 🎋 🎋 🐼 🎋 🎋 🎋</div></div>
+    <div class="heropanda" id="heroPanda">🐼</div></div>
+    <div class="row">
+      <div class="pill" id="countPill"><span>Partenza tra</span><b id="countdown">…</b></div>
+      <div class="pill"><span>Oggi</span><b id="todayLbl">…</b></div>
+      <div class="pill"><span>Fuso orario</span><b id="tzDiff">+7 h rispetto all'Italia</b></div>
+      <div class="pill"><span>🇮🇹 Italia · 🇨🇳 Cina</span><b id="clocks">…</b></div>
+      <div class="pill"><span>Meteo <select id="wxCity" aria-label="Città meteo"></select></span><b id="wxNow">…</b></div>
+    </div>
+  </div>
+</header>
+
+<nav class="tabs"><div class="wrap" id="tabs">
+  <a href="#itinerario">📅 Itinerario</a>
+  <a href="#voli">✈️ Voli</a>
+  <a href="#hotel">🏨 Hotel</a>
+  <a href="#avvertenze">⚠️ Avvertenze</a>
+  <a href="#contatti">📞 Contatti</a>
+  <a href="#checklist">✅ Checklist</a>
+  <a href="#frasi">💬 Frasi</a>
+</div></nav>
+
+<main class="wrap">
+
+<section id="itinerario">
+  <h2>📅 Itinerario giorno per giorno</h2>
+  <div class="note">🗺️ <b>Google Maps in Cina:</b> senza VPN/eSIM internazionale non funziona. Scarica le mappe offline prima di partire (Maps → profilo → Mappe offline) oppure usa Apple Maps / Amap. Il programma può subire variazioni di ordine delle visite per ragioni operative.</div>
+  <div class="filters" id="cityFilters"></div>
+  <div style="display:flex;gap:8px;margin-bottom:12px">
+    <button class="chip" id="expandAll">Apri tutti</button>
+    <button class="chip" id="collapseAll">Chiudi tutti</button>
+    <button class="chip" data-ics="all">📅 Tutto il viaggio nel calendario</button>
+  </div>
+  <div id="days"></div>
+</section>
+
+<section id="voli">
+  <h2>✈️ Piano voli</h2>
+  <div id="flights"></div>
+  <div class="note">Presentati in aeroporto almeno <b>3 ore prima</b> della partenza. Il bagaglio viene spedito fino alla destinazione finale: all'ingresso in Cina e nei transiti segui le indicazioni "Transit". Potrebbe essere richiesto di ritirare e riconsegnare il bagaglio a Pechino (Air China): verifica al check-in.</div>
+</section>
+
+<section id="hotel">
+  <h2>🏨 Dove dormiremo</h2>
+  <div class="grid" id="hotels"></div>
+  <p class="small muted">Sistemazioni "previste" secondo il libretto. Camere disponibili dalle 14:00 del giorno d'arrivo e da liberare entro le 12:00 del giorno di partenza (late check-out a pagamento, da richiedere in loco).</p>
+</section>
+
+<section id="avvertenze">
+  <h2>⚠️ Avvertenze e informazioni utili</h2>
+  <input class="search" id="advSearch" type="search" placeholder="🔍 Cerca (es. powerbank, VPN, mance, treno…)">
+  <div id="advList"></div>
+</section>
+
+<section id="contatti">
+  <h2>📞 Contatti utili</h2>
+  <div class="card" id="contacts"></div>
+  <p class="small muted">⚠️ Numeri trascritti da foto del libretto: ricontrolla sempre sul libretto cartaceo prima di affidarti a un recapito di emergenza.</p>
+</section>
+
+<section id="checklist">
+  <h2>✅ Checklist prima di partire</h2>
+  <div class="bar"><i id="bar"></i></div>
+  <div class="card" id="checks"></div>
+  <button class="chip" id="resetChecks" style="margin-top:10px">Azzera checklist</button>
+</section>
+
+<section id="frasi">
+  <h2>💬 Frasi utili</h2>
+  <p class="small muted">Tocca 🔊 per ascoltare (se il dispositivo ha una voce cinese), 🔍 per mostrare la frase a schermo intero, 📋 per copiarla.</p>
+  <div id="phrases"></div>
+</section>
+</main>
+<div id="taxi" class="overlay"><button id="taxiClose" class="btn">✖ Chiudi</button><div id="taxiBody"></div></div>
+<footer><p style="font-weight:700;color:var(--ink);margin:0 0 6px">🐼 Guida interattiva creata da Marco Lanuti</p>Guida digitale ricavata dal libretto cartaceo del tour.
+<div style="margin-top:12px"><button class="btn" id="offlineBtn">⬇️ Salva tutto per l'uso offline</button><div class="small" id="offlineMsg" style="margin-top:6px"></div></div>
+<div class="small" style="margin-top:8px">Su iPhone: Safari → Condividi → "Aggiungi alla schermata Home". Su Android: menu ⋮ → "Installa app".</div></footer>
+
+<script>
+/* ============ DATI ============ */
+const ls={get(k,d){try{const v=localStorage.getItem(k);return v===null?d:JSON.parse(v)}catch(e){return d}},
+          set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+const M=q=>'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(q);
+
+const DAYS=[
+{n:1,date:'2026-10-27',city:'Roma',title:'Roma → Pechino',emoji:'✈️',wiki:'Leonardo_da_Vinci–Fiumicino_Airport',
+ text:'Partenza per Pechino con vettore di linea IATA (Air China CA 940, ore 19:50 da Fiumicino). Volo notturno. Pasti e pernottamento a bordo.',
+ meals:['Pasti a bordo'],hotel:null,
+ places:[['Aeroporto Fiumicino','Rome Fiumicino Airport Terminal 3']]},
+{n:2,date:'2026-10-28',city:'Pechino',title:'Arrivo a Pechino',emoji:'🏮',wiki:'Hutong',
+ text:'Arrivo (ore 13:00), pratiche doganali e trasferimento in hotel. Giornata a disposizione per il riposo e le prime passeggiate negli Hutong intorno all\'albergo.',
+ meals:['Pranzo libero','Cena cinese'],hotel:['Hotel Wanda Moment','Wanda Moments Hotel Beijing Qianmen'],
+ places:[['Aeroporto di Pechino','Beijing Capital International Airport']]},
+{n:3,date:'2026-10-29',city:'Pechino',title:'Grande Muraglia',emoji:'🏯',wiki:'Great_Wall_of_China',
+ text:'Intera giornata dedicata all\'escursione alla Grande Muraglia e, sulla via del ritorno, allo spettacolare Tempio tibetano di Pechino (Tempio dei Lama). Pranzo in corso di escursione. Cena in ristorante.',
+ meals:['Pranzo in escursione','Cena in ristorante'],hotel:['Hotel Wanda Moment','Wanda Moments Hotel Beijing Qianmen'],
+ places:[['Grande Muraglia','Great Wall of China Beijing'],['Tempio tibetano (Yonghegong)','Yonghe Temple Lama Temple Beijing']]},
+{n:4,date:'2026-10-30',city:'Pechino',title:'Città Proibita e Palazzo d\'Estate',emoji:'👑',wiki:'Forbidden_City',
+ text:'Intera giornata di visite: la Città Proibita ed il Palazzo Imperiale d\'Estate. Pranzo in ristorante; in serata banchetto speciale con menu a base di anatra laccata.',
+ meals:['Pranzo in ristorante','Cena: anatra laccata'],hotel:['Hotel Wanda Moment','Wanda Moments Hotel Beijing Qianmen'],
+ places:[['Città Proibita','Forbidden City Beijing'],['Palazzo d\'Estate','Summer Palace Beijing']],
+ wiki2:'Summer_Palace'},
+{n:5,date:'2026-10-31',city:'Xi\'an',title:'Pechino → Xi\'an in treno',emoji:'🚄',wiki:'Temple_of_Heaven',
+ text:'Pensione completa. In mattinata visita al Tempio del Cielo. Pranzo in lunch box o in ristorante a seconda dell\'orario del treno. Nel pomeriggio partenza in treno per Xi\'an (circa 6 ore). Arrivo, trasferimento in hotel e cena in ristorante. A Xi\'an incontrerete la guida in lingua italiana, che resterà con il gruppo fino alla partenza per Guilin.',
+ meals:['Pensione completa'],hotel:['Hotel Mercure','Mercure Hotel Xi\'an Bell Tower Huimin Street'],
+ places:[['Tempio del Cielo','Temple of Heaven Beijing'],['Stazione Pechino Ovest (probabile)','Beijing West Railway Station'],['Stazione Xi\'an Nord (probabile)','Xi\'an North Railway Station']],
+ note:'Treno: arriva in stazione con largo anticipo (circa 1 ora prima) e tieni i documenti a portata di mano.'},
+{n:6,date:'2026-11-01',city:'Xi\'an',title:'Esercito di Terracotta',emoji:'🗿',wiki:'Terracotta_Army',
+ text:'Intera giornata dedicata alle visite: l\'Esercito di Terracotta, la Città Muraria della Dinastia Ming, la Grande Moschea ed il Quartiere Musulmano. Pranzo in ristorante; cena a base di ravioli.',
+ meals:['Pranzo in ristorante','Cena: ravioli'],hotel:['Hotel Mercure','Mercure Hotel Xi\'an Bell Tower Huimin Street'],
+ places:[['Esercito di Terracotta','Terracotta Army Xi\'an'],['Mura di Xi\'an','Xi\'an City Wall'],['Grande Moschea','Great Mosque of Xi\'an'],['Quartiere Musulmano','Muslim Quarter Xi\'an']]},
+{n:7,date:'2026-11-02',city:'Chengdu',title:'Xi\'an → Chengdu in treno',emoji:'🚄',wiki:'Chengdu',
+ text:'Partenza in treno per Chengdu; pranzo con box lunch o in ristorante a seconda dell\'orario di partenza. Visita al Parco Renmin con degustazione del tè e alla città vecchia di Kuanzhai Xiangzi. Cena in ristorante. Pernottamento in hotel.',
+ meals:['Pranzo box/ristorante','Cena in ristorante'],hotel:['Hotel Jinjiang Bojun','Jinjiang Bojun Hotel Chengdu'],
+ places:[['Parco Renmin','People\'s Park Chengdu'],['Kuanzhai Xiangzi','Kuanzhai Alley Chengdu'],['Stazione Xi\'an Nord (probabile)','Xi\'an North Railway Station'],['Stazione Chengdu Est (probabile)','Chengdu East Railway Station']]},
+{n:8,date:'2026-11-03',city:'Chengdu',title:'Panda giganti',emoji:'🐼',wiki:'Chengdu_Research_Base_of_Giant_Panda_Breeding',
+ text:'Intera giornata dedicata alle visite. Si visiterà il Centro ricerca del panda gigante di Chengdu, a circa 15 km dalla città: occupa una superficie di 2,5 km² e conviene andare al mattino, momento più vivace perché gli animali mangiano. Sono presenti oltre 240 panda e la visita dura circa 3 ore. Pranzo in ristorante e nel pomeriggio visita del quartiere commerciale Jinli. Cena in ristorante. Pernottamento in hotel.',
+ meals:['Pranzo in ristorante','Cena in ristorante'],hotel:['Hotel Jinjiang Bojun','Jinjiang Bojun Hotel Chengdu'],
+ places:[['Centro Panda Giganti','Chengdu Research Base of Giant Panda Breeding'],['Quartiere Jinli','Jinli Ancient Street Chengdu']],
+ note:'Vai presto al mattino: è quando i panda sono più attivi.'},
+{n:9,date:'2026-11-04',city:'Guilin',title:'Chengdu → Guilin in treno',emoji:'🚄',wiki:'Fubo_Hill',
+ text:'Colazione in hotel. Trasferimento in stazione e treno per Guilin. Pranzo con lunch box o in ristorante a seconda dell\'orario. All\'arrivo visita del parco della collina Fubo, poi trasferimento in hotel. Cena in ristorante.',
+ meals:['Colazione','Pranzo box/ristorante','Cena in ristorante'],hotel:['Bravo Hotel','Guilin Bravo Hotel'],
+ places:[['Collina Fubo','Fubo Hill Guilin'],['Stazione Guilin (probabile)','Guilin North Railway Station']]},
+{n:10,date:'2026-11-05',city:'Guilin',title:'Terrazze di riso di Longji',emoji:'🌾',wiki:'Longji_Rice_Terraces',
+ text:'Colazione in hotel. In mattinata escursione a Longji per la visita dei villaggi di una minoranza etnica locale e dei loro suggestivi terrazzamenti. Pranzo in ristorante turistico. Cena in ristorante e pernottamento.',
+ meals:['Colazione','Pranzo','Cena'],hotel:['Bravo Hotel','Guilin Bravo Hotel'],
+ places:[['Terrazze di Longji','Longji Rice Terraces Guilin']]},
+{n:11,date:'2026-11-06',city:'Guilin',title:'Fiume Li, Yangshuo e volo per Shanghai',emoji:'⛰️',wiki:'Li_River_(Guangxi)',
+ text:'Colazione in hotel. Escursione in motonave sul fiume Li ("schegge di giada"), con pranzo a bordo. A fine crociera sosta a Yangshuo e visita a una fabbrica/quartiere dove si prepara ancora il tofu con metodi tradizionali. Rientro con mezzo privato a Guilin e volo per Shanghai.',
+ meals:['Colazione','Pranzo a bordo'],hotel:['Hotel Longemont (Shanghai)','The Longemont Hotel Shanghai'],
+ places:[['Crociera sul Li','Li River cruise Guilin'],['Yangshuo','Yangshuo'],['Aeroporto di Guilin','Guilin Liangjiang International Airport'],['Hotel Longemont','The Longemont Hotel Shanghai']],
+ note:'Volo interno: franchigia bagaglio 20 kg in stiva + 5 kg a mano. Power bank solo con marchio CCC e solo nel bagaglio a mano.'},
+{n:12,date:'2026-11-07',city:'Shanghai',title:'Shanghai: Pudong, Bund e Banyan Tree',emoji:'🌃',wiki:'The_Bund',
+ text:'Intera giornata di visite: passeggiata lungo la skywalk di Pudong sotto i grattacieli più spettacolari del mondo, quartiere di Xintiandi (antica concessione francese), città vecchia con il giardino di Yu, via Nanchino e il Bund. Tempo per lo shopping. A fine pomeriggio terrazza panoramica del Banyan Tree sul Bund per ammirare il tramonto durante l\'aperitivo. Pranzo e cena in ristorante.',
+ meals:['Pranzo in ristorante','Cena in ristorante'],hotel:['Hotel Longemont','The Longemont Hotel Shanghai'],
+ places:[['Pudong / Lujiazui','Lujiazui Elevated Walkway Shanghai'],['Xintiandi','Xintiandi Shanghai'],['Giardino Yu','Yu Garden Shanghai'],['Via Nanchino','Nanjing Road Shanghai'],['Il Bund','The Bund Shanghai'],['Banyan Tree Bund','Banyan Tree Shanghai On The Bund']]},
+{n:13,date:'2026-11-08',city:'Roma',title:'Shanghai → Pechino → Roma',emoji:'🛫',wiki:'Beijing_Capital_International_Airport',
+ text:'Prima colazione. Trasferimento in aeroporto e volo CA1590 Shanghai Hongqiao → Pechino (08:55 – 11:10), poi CA 939 Pechino → Roma (13:10 – 17:50). Il libretto indica camera a disposizione fino alle 12 e trasferimento secondo l\'orario del volo: gli orari del piano voli prevalgono, verifica con la guida.',
+ meals:['Colazione'],hotel:null,
+ places:[['Aeroporto Hongqiao','Shanghai Hongqiao International Airport'],['Aeroporto di Pechino','Beijing Capital International Airport'],['Fiumicino','Rome Fiumicino Airport']],
+ note:'Transito a Pechino: segui le indicazioni "Transit" e controlla se il bagaglio va ritirato e riconsegnato.'}
+];
+
+const FLIGHTS=[
+ {code:'CA 940',from:'FCO',fromN:'Roma Fiumicino',to:'PEK',toN:'Pechino Capital',dep:'27/10/2026 · 19:50',arr:'28/10/2026 · 13:00'},
+ {code:'CA 1590',from:'SHA',fromN:'Shanghai Hongqiao',to:'PEK',toN:'Pechino Capital',dep:'08/11/2026 · 08:55',arr:'08/11/2026 · 11:10'},
+ {code:'CA 939',from:'PEK',fromN:'Pechino Capital',to:'FCO',toN:'Roma Fiumicino',dep:'08/11/2026 · 13:10',arr:'08/11/2026 · 17:50'}
+];
+const HOTELS=[
+ ['Pechino','Hotel Wanda Moment','Wanda Moments Hotel Beijing Qianmen','28–30 ott (3 notti)','https://ak-d.tripcdn.com/images/1mc5n12000m1pjktr0359_R_960_660_R5_D.jpg','Hotel Wanda Moment'],
+ ['Xi\'an','Hotel Mercure','Mercure Hotel Xi\'an Bell Tower Huimin Street','31 ott – 1 nov (2 notti)','https://ak-d.tripcdn.com/images/1mc1512000ca788y264A7_R_960_660_R5_D.jpg','Hotel Mercure'],
+ ['Chengdu','Hotel Jinjiang Bojun','Jinjiang Bojun Hotel Chengdu','2–3 nov (2 notti)'],
+ ['Guilin','Bravo Hotel','Guilin Bravo Hotel','4–5 nov (2 notti)','https://cdn.distantjourneys.co.uk/1e2ebf70-3969-4cf2-98b5-b20d00b5c7d6/GUILIN%20BRAVO%20HOTEL%20-%20LOBBY_Original%20file.jpg?apr_optimization=true&quality=75&width=800&height=450&fit=crop&format=webp&precrop=true','Bravo Hotel'],
+ ['Shanghai','Hotel Longemont','The Longemont Hotel Shanghai','6–7 nov (2 notti)','https://aw-d.tripcdn.com/images/200m170000011qutsF6CF_R_960_660_R5_D.jpg','Hotel Longemont']
+];
+/* nome e indirizzo in cinese per i tassisti; l'indirizzo si può correggere dal pulsante "Modifica" */
+const HCN=[
+ {cn:'北京前门万达美华酒店',addr:'北京市东城区珠市口东大街19号',en:'No.19 Zhushikou East Street, Dongcheng, Beijing'},
+ {cn:'西安钟楼回民街美居酒店',addr:'西安市莲湖区莲湖路30号',en:'No.30 Lianhu Road, Lianhu District, Xi\'an'},
+ {cn:'成都锦江泊君酒店',addr:'',en:'Chengdu'},
+ {cn:'桂林宾馆',addr:'桂林市象山区榕湖南路14号',en:'No.14 South Ronghu Road, Xiangshan, Guilin',tel:'+867732898888'},
+ {cn:'上海龙之梦大酒店',addr:'上海市长宁区延安西路1116号',en:'No.1116 West Yan\'an Road, Changning, Shanghai',tel:'+862161159988'}
+];
+const FOOD={
+2:['🥟 Jiaozi: ravioli ripieni, il piatto del Nord','🍜 Zhajiangmian: spaghetti con salsa di soia e carne','🥞 Jianbing: la crêpe salata da colazione di strada'],
+3:['🥞 Jianbing: crêpe salata di strada','🍜 Zhajiangmian, spaghetti alla pechinese','🥛 Suan nai: lo yogurt in vasetto di ceramica, tipico di Pechino'],
+4:['🦆 Anatra laccata di Pechino, nel banchetto serale: si mangia avvolta in sottili crêpe con salsa e cipollotto','🍡 Tanghulu: spiedini di frutta caramellata, dolce di strada invernale'],
+5:['🥪 Roujiamo: il "panino" cinese con carne stufata, simbolo di Xi\'an','🍜 Biangbiang: spaghetti larghi e piccanti','🍲 Yangrou paomo: zuppa di agnello con pane sbriciolato'],
+6:['🥟 Ravioli (jiaozi): sono il tema della cena di stasera','🥪 Roujiamo, tipico di Xi\'an','🍜 Liangpi: spaghetti freddi di riso con salsa piccante','🍰 Dolci di cachi nel Quartiere Musulmano'],
+7:['🍲 Hot pot del Sichuan: brodo piccante in cui si cuociono carne e verdure','🍵 Tè: nella casa da tè del Parco Renmin si fa la degustazione','🌶️ Mapo tofu, il classico piccante di Chengdu'],
+8:['🍜 Dandan: spaghetti con salsa di sesamo e peperoncino','🍗 Gongbao jiding: pollo con arachidi e peperoncino (il "kung pao")','🥟 Zhong shuijiao: ravioli al peperoncino, tipici del Sichuan','🌶️ Il pepe del Sichuan lascia la bocca "formicolante": chiedi poco piccante se non lo reggi'],
+9:['🍜 Mifen: spaghetti di riso di Guilin con carne e brodo, la specialità della città','🍺 Birra di Guilin'],
+10:['🍚 Riso cotto in tubi di bambù, tipico dei villaggi di Longji','🍵 Tè delle montagne di Longji','🍗 Pollo cotto nel bambù'],
+11:['🐟 Pesce alla birra (pijiu yu), piatto simbolo di Yangshuo','🥟 Niangdoufu: tofu ripieno, specialità locale','🍜 Mifen di Guilin'],
+12:['🥟 Xiaolongbao: ravioli al vapore con brodo dentro, simbolo di Shanghai','🥟 Shengjianbao: panini fritti ripieni','🥩 Hongshaorou: maiale brasato in salsa dolce','🦀 Granchio peloso di Shanghai: è la stagione giusta (autunno)']
+};
+const PHRASES=[
+ ['Base',[['Buongiorno / Ciao','你好','Nǐ hǎo'],['Grazie','谢谢','Xièxie'],['Prego / Di niente','不客气','Bú kèqi'],['Scusi / Mi dispiace','对不起','Duìbuqǐ'],['Per favore','请','Qǐng'],['Sì / Va bene','好的','Hǎo de'],['No, grazie','不用了，谢谢','Búyòng le, xièxie'],['Non capisco','我听不懂','Wǒ tīng bù dǒng'],['Parla inglese?','你会说英语吗？','Nǐ huì shuō Yīngyǔ ma?'],['Quanto costa?','多少钱？','Duōshao qián?'],['Troppo caro','太贵了','Tài guì le']]],
+ ['Ristorante',[['Il conto, per favore','买单','Mǎidān'],['Senza piccante','不要辣','Bú yào là'],['Poco piccante','微辣','Wēi là'],['Sono vegetariano/a','我吃素','Wǒ chī sù'],['Sono allergico/a alle arachidi','我对花生过敏','Wǒ duì huāshēng guòmǐn'],['Acqua calda','热水','Rè shuǐ'],['Acqua naturale','矿泉水','Kuàngquán shuǐ'],['Una birra','一瓶啤酒','Yì píng píjiǔ'],['Un tè','一杯茶','Yì bēi chá'],['Posso avere la ricevuta?','请开发票','Qǐng kāi fāpiào']]],
+ ['Spostamenti',[['Mi porti a questo hotel (mostrando l\'indirizzo)','请带我去这个酒店','Qǐng dài wǒ qù zhège jiǔdiàn'],['Dov\'è il bagno?','厕所在哪里？','Cèsuǒ zài nǎlǐ?'],['Stazione ferroviaria','火车站','Huǒchēzhàn'],['Aeroporto','机场','Jīchǎng'],['Fermi qui, per favore','请在这里停车','Qǐng zài zhèlǐ tíngchē'],['Usi il tassametro, per favore','请打表','Qǐng dǎ biǎo']]],
+ ['Pagamenti e utilità',[['Posso pagare con Alipay / WeChat?','可以用支付宝/微信支付吗？','Kěyǐ yòng Zhīfùbǎo / Wēixìn zhīfù ma?'],['Qual è la password del Wi-Fi?','Wi-Fi密码是什么？','Wi-Fi mìmǎ shì shénme?'],['Mi può fare una foto?','能帮我拍张照吗？','Néng bāng wǒ pāi zhāng zhào ma?']]],
+ ['Emergenze',[['Aiuto!','救命！','Jiùmìng!'],['Chiami la polizia','请报警','Qǐng bàojǐng'],['Chiami un\'ambulanza','请叫救护车','Qǐng jiào jiùhùchē'],['Ho bisogno di un medico','我需要医生','Wǒ xūyào yīshēng'],['Ho perso il passaporto','我的护照丢了','Wǒ de hùzhào diū le']]]
+];
+
+const ADV=[
+{ic:'🛂',t:'Ingresso in Cina e Arrival Card online',cls:'crit',b:`
+<ul><li><b>Passaporto</b> con validità non inferiore a <b>6 mesi</b> dalla data di partenza. Porta anche una fotocopia.</li>
+<li>La Cina sta eliminando il modulo cartaceo: la dichiarazione d'ingresso si compila <b>online</b> sulla piattaforma ufficiale della National Immigration Administration (NIA), tramite sito o mini-programma.</li>
+<li><b>Quando:</b> entro 24 ore prima dell'arrivo in Cina (possibile anche il giorno stesso della partenza).</li></ul>
+<p><a class="btn fill" target="_blank" rel="noopener" href="https://s.nia.gov.cn/ArrivalCardFilingPC/entry-registration-home">Compila l'Arrival Card (NIA) ↗</a></p>
+<p><b>Come procedere:</b></p><ol><li>Accedi al link e inizia la compilazione</li><li>Inserisci dati personali (passaporto, volo, contatti)</li><li>Completa le informazioni su viaggio e permanenza</li><li>Conferma e invia il modulo</li></ol>
+<p>Dopo l'invio viene generato un <b>QR code</b>: salvalo (anche in screenshot) e mostralo all'arrivo in aeroporto. Il servizio online è gratuito: diffida dei siti non ufficiali. Il modulo cartaceo può essere ancora disponibile in aeroporto, ma verrà eliminato. Al controllo passaporto gli ufficiali esaminano passaporto e dichiarazione d'ingresso. L'assistente/guida locale vi incontrerà subito dopo il ritiro bagagli.</p>`},
+{ic:'🔋',t:'IMPORTANTE: power bank con marchio CCC',cls:'crit',b:`
+<p>Dalle regole cinesi in vigore dal <b>28 giugno 2025</b> i power bank senza il marchio di certificazione <b>"CCC"</b> non possono essere trasportati sui voli. Controlla che il tuo lo riporti: altrimenti potrebbe essere <b>sequestrato</b>. Tieni sempre i power bank nel <b>bagaglio a mano</b>.</p>
+<p>Inoltre: la limitazione sul trasporto del cellulare Samsung Galaxy Note 7 resta valida; verifica le restrizioni sui voli previsti.</p>`},
+{ic:'📱',t:'Cellulare: connessione e navigazione (VPN/eSIM)',cls:'hi',b:`
+<ul><li>In Cina sono bloccati Google (Maps, Gmail…), WhatsApp, Facebook, Instagram, ecc.</li>
+<li>Per usarli serve una <b>VPN installata PRIMA di partire</b> (da dentro la Cina i negozi di app sono limitati).</li>
+<li>Alternativa pratica: <b>eSIM/SIM internazionale con roaming</b> (il traffico passa da reti estere, senza blocchi). Verifica che il telefono sia compatibile e sbloccato.</li>
+<li>Scarica mappe offline e traduttore offline.</li>
+<li>WeChat funziona normalmente ed è molto usata anche per comunicare.</li></ul>`},
+{ic:'📲',t:'App consigliate',cls:'hi',b:`
+<ul><li><b>Alipay</b>: pagamenti ovunque (anche con carte straniere), ha anche taxi e mini-programmi.</li>
+<li><b>WeChat (Weixin)</b>: messaggi con guide e locali, pagamenti, QR code.</li>
+<li><b>Didi</b>: taxi con prenotazione e prezzo prima di partire; si usa anche dall'interno di Alipay. L'indirizzo si imposta sulla mappa.</li>
+<li><b>Amap (高德) / Apple Maps</b>: mappe che funzionano in Cina; Google Maps non funziona senza VPN.</li>
+<li><b>Trip.com e 12306</b>: orari e biglietti dei treni (12306 è l'app ufficiale delle ferrovie cinesi, Trip.com è in inglese).</li>
+<li><b>Traduttore offline</b> (Google Traduttore con pacchetto cinese scaricato, o Apple Traduci): per menu e cartelli, anche senza connessione.</li>
+<li><b>VPN</b>: da installare prima di partire (vedi sezione sul cellulare).</li></ul>`},
+{ic:'💳',t:'Pagamenti: Alipay e WeChat Pay',cls:'hi',b:`
+<ul><li>La Cina è molto avanzata nei pagamenti digitali: gran parte dei pagamenti avviene tramite app <b>Alipay</b> (Ant Group) e <b>WeChat/Weixin Pay</b> (Tencent), anche per taxi, ristoranti e negozi.</li>
+<li>I contanti sono sempre meno accettati e le carte di credito internazionali a volte non funzionano. Le app accettano carte straniere (Visa/Mastercard).</li>
+<li><b>Prima di partire:</b> scarica Alipay e/o WeChat, registra l'account e collega la carta di credito (passaporto e numero di cellulare richiesti). Fallo con calma a casa, la verifica può richiedere tempo.</li>
+<li>Porta comunque un po' di contanti per le emergenze e avvisa la banca del viaggio.</li></ul>`},
+{ic:'🚆',t:'Treni in Cina',cls:'hi',b:`
+<ul><li>Non è mai possibile garantire un treno specifico: orari e treni indicati sono previsti e possono variare.</li>
+<li>I biglietti si acquistano solo <b>14 giorni prima</b> della partenza e fino ad allora non si può verificare la disponibilità: può quindi succedere che i posti siano assegnati vicino ma non affiancati, o che il gruppo sia diviso.</li>
+<li>Le stazioni sono molto grandi e affollate, con controlli di sicurezza ripetuti: arriva con almeno <b>1 ora di anticipo</b>.</li>
+<li>La guida nazionale viaggia sul treno con il gruppo; bus e mezzi di trasporto non possono fermarsi liberamente davanti alle stazioni.</li>
+<li>Tieni sempre con te passaporto e biglietto: servono per accedere ai binari.</li>
+<li>Eventuali variazioni vengono comunicate dalle guide.</li></ul>`},
+{ic:'✈️',t:'Voli interni, bagaglio e danni',b:`
+<ul><li>I biglietti dei voli interni non inclusi nel volo intercontinentale vengono consegnati in loco dal corrispondente.</li>
+<li><b>Franchigia bagaglio voli interni (economy): 20 kg in stiva + 5 kg a mano.</b> Per ogni kg in più si paga un supplemento al check-in.</li>
+<li><b>Bagaglio danneggiato:</b> segnala subito in aeroporto, prima di uscire dall'area ritiro bagagli, presso l'ufficio della compagnia aerea e fai redigere il rapporto. Conserva tutta la documentazione per eventuali rimborsi.</li>
+<li>Non mettere in valigia oggetti di valore o documenti personali (gioielli, fotocamere, cellulari, ecc.).</li></ul>`},
+{ic:'🛫',t:'La vostra partenza (Roma e ritorno)',b:`
+<ul><li>Presentati in aeroporto <b>almeno 3 ore prima</b> della partenza del volo, ai banchi della compagnia aerea.</li>
+<li>Consegna la valigia: sarà spedita fino alla destinazione finale. Nei transiti segui le indicazioni "Transit" e le eventuali istruzioni per i controlli.</li>
+<li>Per eventuali problemi (ritardi, bagagli, coincidenze) contatta i recapiti di emergenza, non i canali social.</li></ul>`},
+{ic:'🏨',t:'Camere, check-in e check-out',b:`
+<ul><li>Camere disponibili dalle <b>14:00</b> del giorno d'arrivo; da liberare entro le <b>12:00</b> del giorno di partenza (late check-out con supplemento, da chiedere in loco).</li>
+<li>In Cina non esistono vere camere triple: di solito si aggiunge un letto supplementare a una camera doppia/twin, di dimensioni ridotte.</li>
+<li>Le camere standard sono generalmente a due letti. Il letto matrimoniale, se disponibile, si ottiene con eventuale supplemento da pagare direttamente in loco.</li>
+<li>Gli extra (minibar, ecc.) vanno pagati direttamente alla partenza.</li></ul>`},
+{ic:'🚲',t:'Giri in bicicletta',b:`<p>Per motivi di sicurezza i giri in bici sono vietati ai minori di 12 anni (o più bassi di 130 cm), agli over 65 e alle donne in gravidanza.</p>`},
+{ic:'💶',t:'Mance',b:`<p>In Cina la mancia è un'abitudine consolidata e rappresenta gran parte del reddito di guide e autisti. Non sono incluse nella quota: le mance si consegnano all'accompagnatore/guida nazionale, che le distribuisce tra guide e autisti. Chiedi l'importo consigliato alla guida.</p>`},
+{ic:'👜',t:'Furti',b:`<p>Tieni sempre con te passaporto, telefono e denaro, soprattutto in luoghi affollati (stazioni, mercati, metropolitana). Non lasciare oggetti di valore sul bus o in camera incustoditi.</p>`},
+{ic:'📋',t:'Ordine delle visite e variazioni',b:`<p>Per ragioni operative l'ordine delle visite e il programma possono subire variazioni, nel rispetto dei servizi previsti. I biglietti sono soggetti a disponibilità e i contatti con guide locali verranno comunicati durante il viaggio.</p>`},
+{ic:'🎟️',t:'Voucher',b:`<p>I voucher non sono necessari, perché i servizi sono già stati interamente pagati al corrispondente locale.</p>`},
+{ic:'⚖️',t:'Comunicazione obbligatoria',b:`<p>Ai sensi dell'art. 16 della legge 3 agosto 1998, n. 269: la legge italiana punisce con la reclusione i cittadini che commettono reati di prostituzione e pornografia minorile, anche se commessi all'estero.</p>`},
+{ic:'ℹ️',t:'Altre informazioni sulla Cina',b:`<p>Per notizie generali sulla destinazione e informazioni culturali: <a target="_blank" rel="noopener" href="https://www.mistral.it">www.mistral.it</a></p>`}
+];
+
+const CONTACTS=[
+ ['🚨 Polizia (Cina)','110','tel:110',true],
+ ['🚑 Ambulanza (Cina)','120','tel:120',true],
+ ['🚒 Vigili del fuoco (Cina)','119','tel:119',true],
+ ['Corrispondente locale – Mr Cai Fei Fei (Francesco)','+86 185 1558 6586','tel:+8618515586586'],
+ ['Mistral Tour Torino (Lun–Ven 9–13 / 14:30–18:30)','+39 011 229 3111','tel:+390112293111'],
+ ['Ambasciata d\'Italia a Pechino – Cancelleria consolare','+86 10 8532 7600','tel:+861085327600'],
+];
+
+const CHECKS=[
+ 'Passaporto con validità di almeno 6 mesi + fotocopia',
+ 'Arrival Card NIA compilata (entro 24 h prima) e QR salvato',
+ 'VPN installata e testata (oppure eSIM internazionale attiva)',
+ 'Alipay / WeChat Pay configurati con carta collegata',
+ 'Power bank con marchio CCC, nel bagaglio a mano',
+ 'Mappe offline scaricate (Pechino, Xi\'an, Chengdu, Guilin, Shanghai)',
+ 'Traduttore offline cinese installato',
+ 'Adattatore presa (Cina: tipi A, C, I – 220 V)',
+ 'Un po\' di contanti (RMB) per emergenze',
+ 'Farmaci personali e copia delle prescrizioni',
+ 'Assicurazione di viaggio e recapiti di emergenza salvati offline',
+ 'Bagaglio entro 20 kg (stiva) + 5 kg (mano) per i voli interni',
+ 'Screenshot di voli, hotel e itinerario'
+];
+
+const FUN={
+1:['Roma–Pechino sono circa 8.000 km di volo, di notte sopra Europa orientale e Asia centrale.','La Cina si estende su 5 fusi orari naturali ma usa un solo orario ufficiale (UTC+8): in viaggio avrai 7 ore in più rispetto all\'Italia.','Il panda è un simbolo nazionale cinese: Pechino lo ha scelto anche come mascotte dei Giochi del 2008 (Jingjing).'],
+2:['Hutong significa "vicolo": sono i viottoli di Pechino tra case a corte (siheyuan). Il nome sembra derivare da una parola mongola per "pozzo".','Molti hutong hanno più di 700 anni; tanti sono stati demoliti, ma i più belli sono oggi protetti e pieni di caffè e botteghe.'],
+3:['Il mito che la Muraglia si veda dallo spazio a occhio nudo è falso: è lunga ma stretta.','Non è un muro unico, ma tanti tratti costruiti da dinastie diverse; i più famosi e restaurati sono dell\'epoca Ming.','Un rilevamento ufficiale del 2012 stimò tutte le sue sezioni in oltre 21.000 km.'],
+4:['La Città Proibita fu residenza di 24 imperatori Ming e Qing per quasi 500 anni; il suo nome moderno è Museo del Palazzo.','La leggenda delle 9.999 stanze e mezzo è bellissima ma imprecisa: le sale sono circa 8.700 secondo molti conteggi, in oltre 980 edifici.','L\'anatra laccata di Pechino ha origine imperiale: la pelle croccante si mangia avvolta in sottili crêpe con salsa di soia dolce e cipollotto.'],
+5:['Il Tempio del Cielo era il luogo dove l\'imperatore pregava per il buon raccolto; la sala circolare blu è costruita senza chiodi.','Il Tempio del Cielo è un parco enorme, più grande della Città Proibita; la mattina è pieno di anziani che fanno tai chi, ballano e giocano a carte.','I treni ad alta velocità cinesi possono raggiungere circa 350 km/h e la rete è la più estesa al mondo.'],
+6:['L\'Esercito di Terracotta fu scoperto nel 1974 da contadini che scavavano un pozzo.','Si stimano oltre 8.000 soldati, e ogni volto è diverso. Un tempo erano dipinti a colori vivaci.','Protegge la tomba di Qin Shi Huang, primo imperatore della Cina unificata (III sec. a.C.).','Xi\'an era il punto di partenza della Via della Seta; le sue mura Ming sono lunghe circa 14 km e si possono percorrere anche in bicicletta.'],
+7:['Chengdu è la capitale del Sichuan, famoso per la cucina piccante: il pepe del Sichuan dà un tipico "formicolio" in bocca, il sapore chiamato "mala".','A Chengdu il tè è un rito sociale: le case da tè sono luoghi dove la gente passa ore a chiacchierare.','Il teatro dell\'opera del Sichuan è famoso per la "maschera che cambia", dove il volto dell\'attore cambia in un lampo.'],
+8:['Un panda adulto mangia fino a 12–38 kg di bambù al giorno e passa 10–16 ore a mangiare, anche se il suo intestino è quello di un carnivoro!','Un cucciolo alla nascita pesa circa 100 g: circa un millesimo della mamma.','Il "pollice" del panda non è un vero dito, ma un osso del polso allungato che lo aiuta a stringere il bambù.','Il Centro di Chengdu fu fondato nel 1987 con soli 6 panda salvati. Dal 2016 il panda è classificato "vulnerabile" e non più "in pericolo".'],
+9:['Guilin significa "foresta di osmanto" per via dei suoi alberi di osmanto profumato.','Un proverbio cinese dice che il paesaggio di Guilin è il più bello sotto il cielo.','Le colline carsiche a cono sono nate da calcare eroso per milioni di anni.'],
+10:['Longji significa "schiena del drago": le terrazze ricordano le scaglie di un drago e furono costruite nel corso di circa 700 anni.','Qui si coltiva riso in terrazze che salgono dal fondovalle fin quasi alla cima delle colline.','Le donne Yao di Longji sono celebri per i capelli lunghissimi, che tagliano raramente.'],
+11:['La veduta del fiume Li a Xingping compare sul retro della vecchia banconota cinese da 20 yuan.','Lungo il Li si vedono ancora zattere di bambù e i tradizionali pescatori con i cormorani.','Il tofu fatto in modo tradizionale: i semi di soia vengono macinati, bolliti e coagulati a mano.'],
+12:['La Shanghai Tower, a Pudong, è alta 632 m: è tra i grattacieli più alti del mondo.','Il Bund ha edifici in stili diversi (neoclassico, art déco...), che gli hanno dato il soprannome di "museo dell\'architettura internazionale".','Il Giardino Yu fu costruito nel 1559 ed è un gioiello dello stile giardino cinese di epoca Ming.','Shanghai ha un treno maglev che raggiunge 431 km/h tra l\'aeroporto Pudong e il centro.'],
+13:['Tornando in Italia riguadagnerai le 7 ore: volerai "contro il sole".','L\'aeroporto di Pechino Capital è uno dei più grandi al mondo, con un terminal che ha dimensioni enormi.','La "diplomazia dei panda": dal 1950 la Cina regala o presta panda ad altri Paesi, e i cuccioli nati all\'estero tornano in Cina.']
+};
+function pandaThinking(){return `<svg viewBox="0 0 130 140" role="img" aria-label="Panda che pensa">
+<circle cx="112" cy="12" r="6" fill="#fff" stroke="#9db" stroke-width="1"/><circle cx="100" cy="28" r="4" fill="#fff" stroke="#9db" stroke-width="1"/>
+<ellipse cx="65" cy="124" rx="40" ry="14" fill="#fff" stroke="#222" stroke-width="2"/>
+<circle cx="35" cy="45" r="16" fill="#222"/><circle cx="95" cy="45" r="16" fill="#222"/>
+<circle cx="65" cy="75" r="42" fill="#fff" stroke="#222" stroke-width="2"/>
+<ellipse cx="47" cy="68" rx="11" ry="15" fill="#222" transform="rotate(25 47 68)"/><ellipse cx="83" cy="68" rx="11" ry="15" fill="#222" transform="rotate(-25 83 68)"/>
+<circle cx="49" cy="66" r="4" fill="#fff"/><circle cx="81" cy="66" r="4" fill="#fff"/><circle cx="50" cy="67" r="2" fill="#222"/><circle cx="82" cy="67" r="2" fill="#222"/>
+<ellipse cx="65" cy="84" rx="7" ry="5" fill="#222"/><path d="M58 94q7 6 14 0" fill="none" stroke="#222" stroke-width="2" stroke-linecap="round"/>
+<ellipse cx="82" cy="104" rx="12" ry="9" fill="#222"/>
+<ellipse cx="64" cy="22" rx="30" ry="14" fill="#fff" stroke="#9db" stroke-width="1" opacity="0"/>
+<text x="110" y="16" font-size="9" text-anchor="middle" fill="#222" font-family="sans-serif">?</text></svg>`}
+function pandaIcon(){return `<svg class="pk" viewBox="0 0 60 60" aria-hidden="true"><circle cx="13" cy="13" r="9" fill="#222"/><circle cx="47" cy="13" r="9" fill="#222"/><circle cx="30" cy="32" r="24" fill="#fff" stroke="#222" stroke-width="2"/><ellipse cx="20" cy="30" rx="6" ry="8" fill="#222" transform="rotate(25 20 30)"/><ellipse cx="40" cy="30" rx="6" ry="8" fill="#222" transform="rotate(-25 40 30)"/><circle cx="21" cy="29" r="2" fill="#fff"/><circle cx="39" cy="29" r="2" fill="#fff"/><ellipse cx="30" cy="40" rx="4" ry="3" fill="#222"/></svg>`}
+
+/* ============ UTILITY ============ */
+const $=s=>document.querySelector(s);
+const MESI=['gen','feb','mar','apr','mag','giu','lug','ago','set','ott','nov','dic'];
+const GG=['dom','lun','mar','mer','gio','ven','sab'];
+const fmt=d=>{const x=new Date(d+'T12:00:00');return {d:x.getDate(),m:MESI[x.getMonth()],w:GG[x.getDay()]}};
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const GRAD={'Roma':['#4a6fa5','#7aa0d0'],'Pechino':['#a3231a','#e07b3c'],'Xi\'an':['#8a5a1f','#d9a441'],'Chengdu':['#2e7d4f','#8cc9a0'],'Guilin':['#1f7a7a','#7fcdc0'],'Shanghai':['#2a3a8c','#7a8ee0']};
+
+/* ============ RENDER GIORNI ============ */
+const cities=['Tutti',...new Set(DAYS.map(d=>d.city==='Roma'?'Roma':d.city))];
+const doneDays=ls.get('doneDays',{});
+let cityFilter='Tutti';
+function renderFilters(){
+  $('#cityFilters').innerHTML=cities.map(c=>`<button class="chip ${c===cityFilter?'on':''}" data-c="${esc(c)}">${esc(c)}</button>`).join('');
+  document.querySelectorAll('#cityFilters .chip').forEach(b=>b.onclick=()=>{cityFilter=b.dataset.c;renderFilters();renderDays()});
+}
+function mapEmbed(q){return 'https://maps.google.com/maps?q='+encodeURIComponent(q)+'&output=embed'}
+function dayHTML(d){
+  const f=fmt(d.date);
+  const g=GRAD[d.city]||GRAD['Roma'];
+  const places=d.places.map(p=>`<a class="btn" target="_blank" rel="noopener" href="${M(p[1])}">📍 ${esc(p[0])}</a>`).join('');
+  const meals=d.meals.map(m=>`<span class="meal">🍽️ ${esc(m)}</span>`).join('');
+  const hotel=d.hotel?`<div class="hotel"><div>🏨 <b>${esc(d.hotel[0])}</b><div class="small muted">Sistemazione prevista</div></div><a class="btn fill" target="_blank" rel="noopener" href="${M(d.hotel[1])}">Apri in Maps</a></div>`:'';
+  const routeQ=d.places[0]?d.places[0][1]:d.city;
+  return `<details class="card day" id="g${d.n}" data-city="${esc(d.city)}" data-date="${d.date}">
+  <summary><div class="dnum"><b>${f.d}</b><span>${f.m}</span></div>
+   <div class="dh"><div class="t">${d.emoji} Giorno ${d.n} · ${esc(d.title)}</div><div class="s">${f.w} ${f.d} ${f.m} 2026 · ${esc(d.city==='Roma'?'Italia':d.city)}</div></div><span class="chev">▶</span></summary>
+  <div class="dbody">
+   <div class="hero-img" data-wiki="${esc(d.wiki)}" style="background-image:linear-gradient(135deg,${g[0]},${g[1]})"><div class="emo">${d.emoji}</div><div class="cap"></div></div>
+   <p>${esc(d.text)}</p>
+   <div class="wxline" data-wxcity="${esc(d.city)}" data-wxdate="${d.date}"></div>
+   ${d.note?`<div class="note">💡 ${esc(d.note)}</div>`:''}
+   <div class="meals">${meals}</div>
+   ${FOOD[d.n]?`<div class="food"><b>🍜 Da assaggiare</b><ul>${FOOD[d.n].map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div>`:''}
+   ${hotel}
+   <div class="places">${places}</div>
+   <button class="btn" data-map="${esc(routeQ)}">🗺️ Mostra mappa qui</button>
+   <div class="mapbox"></div>
+   <button class="btn" data-ics="${d.n}">📅 Aggiungi al calendario</button>
+   <button class="btn funbtn" data-fun="${d.n}">🐼 Curiosità</button>
+   <div class="funbox" id="fun${d.n}">${pandaThinking()}<ul>${(FUN[d.n]||[]).map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div>
+   <label class="todo"><input type="checkbox" data-done="${d.n}" ${doneDays[d.n]?'checked':''}> Giornata completata</label>
+  </div></details>`;
+}
+function renderDays(){
+  const list=DAYS.filter(d=>cityFilter==='Tutti'||d.city===cityFilter||(cityFilter==='Roma'&&(d.n===1||d.n===13)));
+  $('#days').innerHTML=list.map(dayHTML).join('');
+  document.querySelectorAll('[data-map]').forEach(b=>b.onclick=()=>{
+    const box=b.nextElementSibling;
+    if(box.firstChild){box.innerHTML='';b.textContent='🗺️ Mostra mappa qui';return}
+    box.innerHTML=`<iframe loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="${mapEmbed(b.dataset.map)}"></iframe>`;
+    b.textContent='✖ Nascondi mappa';
+  });
+  document.querySelectorAll('[data-done]').forEach(c=>c.onchange=()=>{doneDays[c.dataset.done]=c.checked;ls.set('doneDays',doneDays)});
+  document.querySelectorAll('.day').forEach(el=>el.addEventListener('toggle',()=>{if(el.open)loadImg(el)}));
+  openToday();
+  fillDayWx();
+}
+const wikiCache={};
+async function loadImg(el){
+  const h=el.querySelector('.hero-img');
+  if(!h||h.dataset.loaded)return;
+  h.dataset.loaded=1;
+  const t=h.dataset.wiki;
+  try{
+    if(!wikiCache[t]){
+      const r=await fetch('https://en.wikipedia.org/api/rest_v1/page/summary/'+encodeURIComponent(t));
+      wikiCache[t]=await r.json();
+    }
+    const j=wikiCache[t];
+    const src=j.originalimage&&j.originalimage.source?(j.thumbnail&&j.thumbnail.source?j.thumbnail.source.replace(/\/\d+px-/,'/960px-'):j.originalimage.source):(j.thumbnail&&j.thumbnail.source);
+    if(src){
+      const im=new Image();
+      im.onload=()=>{h.style.backgroundImage=`url("${src}")`;h.querySelector('.emo').style.display='none';
+        h.querySelector('.cap').innerHTML='📷 '+esc(j.title||'')+' · <a style="color:#fff" target="_blank" rel="noopener" href="'+esc((j.content_urls&&j.content_urls.desktop.page)||'#')+'">Wikipedia ↗</a>'};
+      im.src=src;
+    }
+  }catch(e){/* offline: resta il gradiente con emoji */}
+}
+function openToday(){
+  const iso=new Date().toISOString().slice(0,10);
+  const el=document.querySelector(`.day[data-date="${iso}"]`);
+  if(el)el.classList.add('today');
+}
+
+/* ============ ALTRE SEZIONI ============ */
+$('#flights').innerHTML=FLIGHTS.map(f=>`<div class="card flight">
+ <div class="fcode">${f.code}</div>
+ <div class="route"><div class="ap"><b>${f.from}</b><span class="small muted">${f.fromN}</span></div><div class="line"></div><div class="ap"><b>${f.to}</b><span class="small muted">${f.toN}</span></div></div>
+ <div class="ftime"><div>🛫 ${f.dep}</div><div>🛬 ${f.arr}</div></div></div>`).join('');
+const CITYWIKI={'Pechino':'Beijing',"Xi'an":"Xi'an",'Chengdu':'Chengdu','Guilin':'Guilin','Shanghai':'Shanghai'};
+$('#hotels').innerHTML=HOTELS.map((h,i)=>`<div class="card hcard hotelc"><div class="himg" data-i="${i}"><span class="emo">🏨</span><div class="cap">Carico foto…</div></div><div class="hb"><div class="muted small">${h[0]}</div><h3>${h[1]}</h3><div class="small" style="margin-bottom:10px">📆 ${h[3]}</div><div class="places"><a class="btn fill" target="_blank" rel="noopener" href="${M(h[2])}">📍 Google Maps</a><a class="btn" target="_blank" rel="noopener" href="https://www.google.com/search?tbm=isch&q=${encodeURIComponent(h[2])}">🖼️ Altre foto</a></div>
+<div class="cnaddr"><div class="small muted">In cinese</div><div class="cnname">${HCN[i].cn}</div><div class="cnad" data-ad="${i}"></div></div>
+<button class="btn fill taxibtn" data-taxi="${i}">🚕 Mostra al tassista</button> <button class="btn" data-editad="${i}">✏️ Modifica indirizzo</button></div></div>`).join('');
+const hAddr=i=>ls.get('hadd'+i,null)||HCN[i].addr;
+function paintAddr(){document.querySelectorAll('.cnad').forEach(e=>{const a=hAddr(e.dataset.ad);e.textContent=a||'(indirizzo da inserire: tocca "Modifica indirizzo")'})}
+paintAddr();
+function showTaxi(i){
+  const h=HOTELS[i],c=HCN[i],a=hAddr(i);
+  $('#taxiBody').innerHTML=`<div class="tx1">请带我去这个酒店<br><small>Per favore, portami a questo hotel</small></div><div class="tx2">${c.cn}</div><div class="tx3">${a||''}</div><div class="tx4">${h[1]} · ${c.en}</div>${c.tel?`<a class="btn fill" href="tel:${c.tel}">📞 Chiama l'hotel</a>`:''}`;
+  $('#taxi').classList.add('on');
+}
+document.addEventListener('click',e=>{
+  const t=e.target.closest('[data-taxi]');if(t)showTaxi(t.dataset.taxi);
+  const ed=e.target.closest('[data-editad]');if(ed){const i=ed.dataset.editad;const v=prompt('Indirizzo in cinese (copialo dai documenti di prenotazione):',hAddr(i)||'');if(v!==null){ls.set('hadd'+i,v.trim()||null);paintAddr()}}
+  if(e.target.closest('#taxiClose'))$('#taxi').classList.remove('on');
+});
+async function jget(u){try{return await (await fetch(u)).json()}catch(e){return null}}
+async function loadHotelImgs(){
+  for(const el of document.querySelectorAll('.himg')){
+    const h=HOTELS[el.dataset.i];let src=null,cap='';
+    if(h[4]){
+      const ok=await new Promise(r=>{const im=new Image();im.referrerPolicy='no-referrer';im.onload=()=>r(true);im.onerror=()=>r(false);im.src=h[4];setTimeout(()=>r(false),8000)});
+      if(ok){src=h[4];cap='📷 '+h[5]}
+    }
+    if(!src){const j=await jget('https://en.wikipedia.org/api/rest_v1/page/summary/'+encodeURIComponent(CITYWIKI[h[0]]));
+      src=j&&j.thumbnail&&j.thumbnail.source;cap='📷 '+h[1]}
+    if(src){el.style.backgroundImage=`url("${src}")`;el.querySelector('.emo').style.display='none'}
+    el.querySelector('.cap').textContent=src?cap:'Foto non disponibile offline';
+  }
+}
+loadHotelImgs();
+$('#contacts').innerHTML=CONTACTS.map(c=>`<div class="contact"><div>${c[0]}<div class="small muted">${c[1]}</div></div><a class="btn ${c[3]?'sos':''}" href="${c[2]}">📞 Chiama</a></div>`).join('');
+
+function renderAdv(q=''){
+  q=q.toLowerCase();
+  const list=ADV.filter(a=>!q||(a.t+a.b).toLowerCase().includes(q));
+  $('#advList').innerHTML=list.length?list.map(a=>`<details class="card adv ${a.cls||''}" ${q||a.cls==='crit'?'open':''}><summary><span>${a.ic}</span>${a.t}<span class="chev">▶</span></summary><div class="ab">${a.b}</div></details>`).join(''):'<p class="muted">Nessun risultato.</p>';
+}
+$('#advSearch').oninput=e=>renderAdv(e.target.value.trim());
+
+const checked=ls.get('checks',{});
+function renderChecks(){
+  $('#checks').innerHTML=CHECKS.map((c,i)=>`<label class="check ${checked[i]?'done':''}"><input type="checkbox" data-i="${i}" ${checked[i]?'checked':''}><span>${c}</span></label>`).join('');
+  document.querySelectorAll('#checks input').forEach(c=>c.onchange=()=>{checked[c.dataset.i]=c.checked;ls.set('checks',checked);renderChecks()});
+  const n=CHECKS.filter((_,i)=>checked[i]).length;
+  $('#bar').style.width=(n/CHECKS.length*100)+'%';
+}
+$('#resetChecks').onclick=()=>{Object.keys(checked).forEach(k=>delete checked[k]);ls.set('checks',checked);renderChecks()};
+
+/* frasi utili */
+$('#phrases').innerHTML=PHRASES.map(([cat,list])=>`<h3 style="margin:16px 0 8px">${cat}</h3><div class="card">${list.map(p=>`<div class="phrase"><div class="pi"><div>${esc(p[0])}</div><div class="zh">${p[1]}</div><div class="py muted">${esc(p[2])}</div></div><div class="pa"><button class="btn" data-say="${esc(p[1])}" aria-label="Ascolta">🔊</button><button class="btn" data-big="${esc(p[0])}|${esc(p[1])}|${esc(p[2])}" aria-label="Mostra">🔍</button><button class="btn" data-copy="${esc(p[1])}" aria-label="Copia">📋</button></div></div>`).join('')}</div>`).join('');
+document.addEventListener('click',e=>{
+  const s=e.target.closest('[data-say]');
+  if(s&&'speechSynthesis' in window){const u=new SpeechSynthesisUtterance(s.dataset.say);u.lang='zh-CN';speechSynthesis.cancel();speechSynthesis.speak(u)}
+  const b=e.target.closest('[data-big]');
+  if(b){const [it,zh,py]=b.dataset.big.split('|');$('#taxiBody').innerHTML=`<div class="tx2">${zh}</div><div class="tx3">${py}</div><div class="tx4">${it}</div>`;$('#taxi').classList.add('on')}
+  const c=e.target.closest('[data-copy]');
+  if(c){const t=c.dataset.copy;const done=()=>{c.textContent='✔️';setTimeout(()=>c.textContent='📋',1200)};
+    if(navigator.clipboard)navigator.clipboard.writeText(t).then(done,done);else{const x=document.createElement('textarea');x.value=t;document.body.appendChild(x);x.select();try{document.execCommand('copy')}catch(_){}x.remove();done()}}
+});
+
+/* ============ HEADER, TEMA, NAV ============ */
+function tick(){
+  const dep=new Date('2026-10-27T19:50:00+01:00');
+  const now=new Date();
+  const ms=dep-now;
+  const cd=$('#countdown'),pill=$('#countPill');
+  if(ms>0){const d=Math.floor(ms/864e5),h=Math.floor(ms%864e5/36e5);cd.textContent=d+' giorni '+h+' h'}
+  else if(now<new Date('2026-11-08T18:00:00+01:00')){pill.firstElementChild.textContent='Stato';cd.textContent='In viaggio! 🎉'}
+  else{pill.firstElementChild.textContent='Stato';cd.textContent='Viaggio concluso'}
+  $('#todayLbl').textContent=now.toLocaleDateString('it-IT',{weekday:'short',day:'numeric',month:'short'});
+}
+tick();setInterval(tick,60000);
+function clocks(){
+  const now=new Date();
+  const f=tz=>now.toLocaleTimeString('it-IT',{timeZone:tz,hour:'2-digit',minute:'2-digit'});
+  $('#clocks').textContent=f('Europe/Rome')+' · '+f('Asia/Shanghai');
+  const off=tz=>{const p=new Intl.DateTimeFormat('en-US',{timeZone:tz,timeZoneName:'longOffset'}).formatToParts(now).find(x=>x.type==='timeZoneName').value.replace('GMT','');const m=p.match(/([+-])(\d+)(?::(\d+))?/);return m?(m[1]==='-'?-1:1)*(+m[2]+(+m[3]||0)/60):0};
+  try{const d=off('Asia/Shanghai')-off('Europe/Rome');$('#tzDiff').textContent=(d>=0?'+':'')+d+' h rispetto all\'Italia'}catch(e){}
+}
+clocks();setInterval(clocks,15000);
+
+
+$('#expandAll').onclick=()=>document.querySelectorAll('.day').forEach(d=>{d.open=true;loadImg(d)});
+$('#collapseAll').onclick=()=>document.querySelectorAll('.day').forEach(d=>d.open=false);
+
+/* meteo (Open-Meteo, gratuito, senza chiave) */
+const WXC={'Roma':[41.9028,12.4964],'Pechino':[39.9042,116.4074],"Xi'an":[34.3416,108.9398],'Chengdu':[30.5728,104.0668],'Guilin':[25.2736,110.29],'Shanghai':[31.2304,121.4737]};
+function wxIcon(c){if(c===0)return['☀️','sereno'];if(c<=2)return['🌤️','poco nuvoloso'];if(c===3)return['☁️','coperto'];if(c<=48)return['🌫️','nebbia'];if(c<=57)return['🌦️','pioggerella'];if(c<=67)return['🌧️','pioggia'];if(c<=77)return['❄️','neve'];if(c<=82)return['🌧️','rovesci'];if(c<=86)return['🌨️','neve'];return['⛈️','temporale']}
+const WXK=Object.keys(WXC);
+let wxData=(ls.get('wx',null)||{}).d||{};const wxProms={};
+/* richieste parallele per città (la più veloce); i dati in cache compaiono subito */
+function fetchCity(c,tries=0){
+  if(!wxProms[c]){const [la,lo]=WXC[c];
+    wxProms[c]=fetch(`https://api.open-meteo.com/v1/forecast?latitude=${la}&longitude=${lo}&current=temperature_2m,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&forecast_days=16&timezone=auto`)
+      .then(r=>r.json()).then(j=>{if(!j.daily)throw 0;wxData[c]=j;ls.set('wx',{t:Date.now(),d:wxData});return j})
+      .catch(()=>new Promise(res=>{delete wxProms[c];setTimeout(()=>{if(tries++<2)fetchCity(c,tries).then(res);else res(null)},1500)}))}
+  return wxProms[c];
+}
+function getWx(city){return wxData[city]||null}
+function fillDayWx(){
+  fillDayWxNow();
+  const cur=$('#wxCity').value;
+  [cur,...WXK.filter(c=>c!==cur)].forEach(c=>fetchCity(c).then(()=>{fillDayWxNow();paintWx()}));
+}
+function fillDayWxNow(){
+  for(const el of document.querySelectorAll('.wxline')){
+    const j=getWx(el.dataset.wxcity);if(!j||!j.daily)continue;
+    const i=j.daily.time.indexOf(el.dataset.wxdate);if(i<0)continue;
+    const [ic,tx]=wxIcon(j.daily.weather_code[i]);
+    const p=j.daily.precipitation_probability_max&&j.daily.precipitation_probability_max[i];
+    el.textContent=`${ic} Previsione: ${tx}, ${Math.round(j.daily.temperature_2m_min[i])}°–${Math.round(j.daily.temperature_2m_max[i])}°C`+(p!=null?` · pioggia ${p}%`:'');
+    el.classList.add('on');
+  }
+}
+function paintWx(){
+  const j=getWx($('#wxCity').value);
+  if(!j||!j.current)return false;
+  const [ic]=wxIcon(j.current.weather_code);
+  $('#wxNow').textContent=`${ic} ${Math.round(j.current.temperature_2m)}°C · ${Math.round(j.daily.temperature_2m_min[0])}/${Math.round(j.daily.temperature_2m_max[0])}°`;
+  return true;
+}
+async function showWx(){
+  if(!paintWx())$('#wxNow').textContent='…';
+  const ok=await fetchCity($('#wxCity').value);
+  if(!paintWx()&&!ok)$('#wxNow').textContent='offline';
+}
+(function(){
+  const sel=$('#wxCity');
+  sel.innerHTML=Object.keys(WXC).map(c=>`<option>${c}</option>`).join('');
+  const iso=new Date().toISOString().slice(0,10);const d=DAYS.find(x=>x.date===iso);
+  sel.value=d?d.city:'Pechino';
+  sel.onchange=showWx;showWx();
+})();
+
+/* calendario (.ics): si apre nell'app Calendario del dispositivo */
+const icsEsc=s=>String(s).replace(/\\/g,'\\\\').replace(/;/g,'\\;').replace(/,/g,'\\,').replace(/\r?\n/g,'\\n');
+function icsFold(l){const out=[];while(l.length>73){out.push(l.slice(0,73));l=' '+l.slice(73)}out.push(l);return out.join('\r\n')}
+function icsEvent(d){
+  const ymd=s=>s.replace(/-/g,'');
+  const nx=new Date(d.date+'T12:00:00Z');nx.setUTCDate(nx.getUTCDate()+1);
+  const end=nx.toISOString().slice(0,10).replace(/-/g,'');
+  const desc=[d.text,'','Pasti: '+d.meals.join(', '),d.hotel?'Hotel: '+d.hotel[0]:'',d.note?'Nota: '+d.note:'',
+    ...d.places.map(p=>p[0]+': '+M(p[1]))].filter((x,i,a)=>x!==''||(i>0&&a[i-1]!=='')).join('\n');
+  const loc=d.hotel?d.hotel[1]:d.places[0][1];
+  return ['BEGIN:VEVENT','UID:cina2026-giorno'+d.n+'@guida-cina','DTSTAMP:'+new Date().toISOString().replace(/[-:]|\.\d+/g,''),
+    'DTSTART;VALUE=DATE:'+ymd(d.date),'DTEND;VALUE=DATE:'+end,
+    'SUMMARY:'+icsEsc('🐼 Cina · Giorno '+d.n+': '+d.title),'LOCATION:'+icsEsc(loc),'DESCRIPTION:'+icsEsc(desc),'TRANSP:TRANSPARENT','END:VEVENT'].map(icsFold).join('\r\n');
+}
+function downloadIcs(list,name){
+  const body=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Guida Cina 2026//IT','CALSCALE:GREGORIAN','METHOD:PUBLISH',...list.map(icsEvent),'END:VCALENDAR'].join('\r\n');
+  const url=URL.createObjectURL(new Blob([body],{type:'text/calendar;charset=utf-8'}));
+  const a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),10000);
+}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-ics]');if(!b)return;
+  if(b.dataset.ics==='all')downloadIcs(DAYS,'cina-2026-itinerario.ics');
+  else{const d=DAYS.find(x=>x.n==b.dataset.ics);downloadIcs([d],'cina-2026-giorno-'+d.n+'.ics')}});
+
+/* tab: una sezione alla volta */
+const links=[...document.querySelectorAll('#tabs a')];
+const secs=[...document.querySelectorAll('main>section')];
+function showTab(id,scroll){
+  if(!secs.some(s=>s.id===id))id='itinerario';
+  secs.forEach(s=>s.classList.toggle('active',s.id===id));
+  links.forEach(l=>l.classList.toggle('on',l.getAttribute('href')==='#'+id));
+  const a=document.querySelector('#tabs a.on');if(a)a.scrollIntoView({inline:'center',block:'nearest'});
+  if(scroll)window.scrollTo({top:0});
+  ls.set('tab',id);
+}
+links.forEach(l=>l.addEventListener('click',e=>{e.preventDefault();const id=l.getAttribute('href').slice(1);history.replaceState(null,'','#'+id);showTab(id,true)}));
+showTab((location.hash||'').slice(1)||ls.get('tab','itinerario'),false);
+
+/* panda nei titoli, curiosità, foto panda nel banner */
+document.querySelectorAll('main h2').forEach(h=>h.insertAdjacentHTML('beforeend',pandaIcon()));
+document.addEventListener('click',e=>{const b=e.target.closest('[data-fun]');if(!b)return;
+  const box=document.getElementById('fun'+b.dataset.fun);const on=box.classList.toggle('on');
+  b.textContent=on?'✖ Chiudi curiosità':'🐼 Curiosità'});
+(async()=>{try{const r=await fetch('https://en.wikipedia.org/api/rest_v1/page/summary/Giant_panda');const j=await r.json();
+  const s=j.thumbnail&&j.thumbnail.source;if(s){const im=new Image();im.onload=()=>{const h=$('#heroPanda');h.style.backgroundImage=`url("${s}")`;h.textContent=''};im.src=s}}catch(e){}})();
+
+/* offline: service worker + download di foto e meteo */
+if('serviceWorker' in navigator&&/^https?:$/.test(location.protocol)){
+  navigator.serviceWorker.register('sw.js').catch(()=>{});
+}
+async function saveOffline(auto){
+  const msg=$('#offlineMsg'),btn=$('#offlineBtn');
+  if(!navigator.onLine){if(!auto)msg.textContent='Serve una connessione per scaricare i contenuti.';return}
+  btn.disabled=true;msg.textContent='Scarico foto e meteo…';
+  try{
+    await Promise.all([...document.querySelectorAll('.day')].map(loadImg));
+    await Promise.all(WXK.map(fetchCity));
+    await new Promise(r=>setTimeout(r,2500));
+    ls.set('offlineDone',Date.now());
+    msg.textContent='✔️ Salvato: la guida ora funziona anche senza connessione.';
+  }catch(e){msg.textContent='Download non completato: riprova con una connessione migliore.'}
+  btn.disabled=false;
+}
+$('#offlineBtn').onclick=()=>saveOffline(false);
+if(ls.get('offlineDone',0))$('#offlineMsg').textContent='✔️ Contenuti già salvati per l\'uso offline.';
+else setTimeout(()=>saveOffline(true),5000);
+
+renderFilters();renderDays();renderAdv();renderChecks();
+</script>
+</body>
+</html>
