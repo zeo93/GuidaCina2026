@@ -647,7 +647,7 @@ $('#contacts').innerHTML=CONTACTS.map(c=>`<div class="contact"><div>${c[0]}<div 
 function renderAdv(q=''){
   q=q.toLowerCase();
   const list=ADV.filter(a=>!q||(a.t+a.b).toLowerCase().includes(q));
-  $('#advList').innerHTML=list.length?list.map(a=>`<details class="card adv ${a.cls||''}" ${q||a.cls==='crit'?'open':''}><summary><span>${a.ic}</span>${a.t}<span class="chev">▶</span></summary><div class="ab">${a.b}</div></details>`).join(''):'<p class="muted">Nessun risultato.</p>';
+  $('#advList').innerHTML=list.length?list.map(a=>`<details class="card adv ${a.cls||''}" ${q?'open':''}><summary><span>${a.ic}</span>${a.t}<span class="chev">▶</span></summary><div class="ab">${a.b}</div></details>`).join(''):'<p class="muted">Nessun risultato.</p>';
 }
 $('#advSearch').oninput=e=>renderAdv(e.target.value.trim());
 
