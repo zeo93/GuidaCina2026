@@ -244,9 +244,7 @@ footer{text-align:center;color:var(--muted);font-size:.82rem;padding:0 16px 40px
 
 <section id="itinerario">
   <h2>📅 Itinerario giorno per giorno</h2>
-  <div class="note">🗺️ <b>Google Maps in Cina:</b> senza VPN/eSIM internazionale non funziona. Scarica le mappe offline prima di partire (Maps → profilo → Mappe offline) oppure usa Apple Maps / Amap. Il programma può subire variazioni di ordine delle visite per ragioni operative.</div>
-  <div class="filters" id="cityFilters"></div>
-  <div style="display:flex;gap:8px;margin-bottom:12px">
+  <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
     <button class="chip" id="expandAll">Apri tutti</button>
     <button class="chip" id="collapseAll">Chiudi tutti</button>
     <button class="chip" data-ics="all">📅 Tutto il viaggio nel calendario</button>
@@ -427,6 +425,11 @@ const ADV=[
 <li>Alternativa pratica: <b>eSIM/SIM internazionale con roaming</b> (il traffico passa da reti estere, senza blocchi). Verifica che il telefono sia compatibile e sbloccato.</li>
 <li>Scarica mappe offline e traduttore offline.</li>
 <li>WeChat funziona normalmente ed è molto usata anche per comunicare.</li></ul>`},
+{ic:'🗺️',t:'Google Maps in Cina',cls:'hi',b:`
+<p>Senza VPN o eSIM internazionale <b>Google Maps non funziona in Cina</b>, e di conseguenza non si aprono i link alle mappe di questa guida.</p>
+<ul><li>Prima di partire scarica le <b>mappe offline</b>: Google Maps → profilo → Mappe offline.</li>
+<li>In alternativa usa <b>Apple Maps</b> o <b>Amap (高德)</b>, che funzionano in Cina.</li>
+<li>Per i taxi mostra al conducente l'indirizzo in cinese (sezione Hotel → "Mostra al tassista").</li></ul>`},
 {ic:'📲',t:'App consigliate',cls:'hi',b:`
 <ul><li><b>Alipay</b>: pagamenti ovunque (anche con carte straniere), ha anche taxi e mini-programmi.</li>
 <li><b>WeChat (Weixin)</b>: messaggi con guide e locali, pagamenti, QR code.</li>
@@ -532,13 +535,7 @@ const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',
 const GRAD={'Roma':['#4a6fa5','#7aa0d0'],'Pechino':['#a3231a','#e07b3c'],'Xi\'an':['#8a5a1f','#d9a441'],'Chengdu':['#2e7d4f','#8cc9a0'],'Guilin':['#1f7a7a','#7fcdc0'],'Shanghai':['#2a3a8c','#7a8ee0']};
 
 /* ============ RENDER GIORNI ============ */
-const cities=['Tutti',...new Set(DAYS.map(d=>d.city==='Roma'?'Roma':d.city))];
 const doneDays=ls.get('doneDays',{});
-let cityFilter='Tutti';
-function renderFilters(){
-  $('#cityFilters').innerHTML=cities.map(c=>`<button class="chip ${c===cityFilter?'on':''}" data-c="${esc(c)}">${esc(c)}</button>`).join('');
-  document.querySelectorAll('#cityFilters .chip').forEach(b=>b.onclick=()=>{cityFilter=b.dataset.c;renderFilters();renderDays()});
-}
 function mapEmbed(q){return 'https://maps.google.com/maps?q='+encodeURIComponent(q)+'&output=embed'}
 function dayHTML(d){
   const f=fmt(d.date);
@@ -568,7 +565,7 @@ function dayHTML(d){
   </div></details>`;
 }
 function renderDays(){
-  const list=DAYS.filter(d=>cityFilter==='Tutti'||d.city===cityFilter||(cityFilter==='Roma'&&(d.n===1||d.n===13)));
+  const list=DAYS;
   $('#days').innerHTML=list.map(dayHTML).join('');
   document.querySelectorAll('[data-map]').forEach(b=>b.onclick=()=>{
     const box=b.nextElementSibling;
@@ -857,7 +854,7 @@ $('#offlineBtn').onclick=()=>saveOffline(false);
 if(ls.get('offlineDone',0))$('#offlineMsg').textContent='✔️ Contenuti già salvati per l\'uso offline.';
 else setTimeout(()=>saveOffline(true),5000);
 
-renderFilters();renderDays();renderAdv();renderChecks();
+renderDays();renderAdv();renderChecks();
 </script>
 </body>
 </html>
