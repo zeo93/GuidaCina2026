@@ -188,6 +188,11 @@ details[open]>summary .chev{transform:rotate(90deg)}
 .zz{position:absolute;right:-6px;top:20px;font-weight:800;color:#1f5c8b;opacity:0;animation:zz 2.4s infinite}
 .z2{animation-delay:.8s}.z3{animation-delay:1.6s}
 @keyframes zz{0%{opacity:0;transform:translate(0,0) scale(.6)}30%{opacity:1}100%{opacity:0;transform:translate(24px,-50px) scale(1.5)}}
+.roller{position:fixed;bottom:18px;left:-130px;z-index:210;pointer-events:none;display:flex;flex-direction:column;align-items:center;animation:rollx 4.2s linear forwards}
+.rollball{animation:rollr 4.2s linear forwards}
+.rolltxt{background:#fff;color:#111;border-radius:14px;padding:5px 12px;font-weight:700;box-shadow:0 4px 14px rgba(0,0,0,.25);white-space:nowrap;margin-bottom:4px}
+@keyframes rollx{to{transform:translateX(var(--dist))}}
+@keyframes rollr{to{transform:rotate(var(--rot))}}
 .coin{position:fixed;top:-34px;font-size:26px;z-index:210;animation:fall linear forwards;pointer-events:none}
 .anim-valuta{animation:bob 1s ease-in-out infinite}
 .confetto{position:fixed;top:-12px;width:9px;height:14px;z-index:210;animation:fall linear forwards;pointer-events:none}
@@ -1010,12 +1015,28 @@ async function fxLoad(){
       c.style.cssText=`left:${Math.random()*100}vw;background:${cols[i%cols.length]};animation-delay:${Math.random()*.8}s;animation-duration:${2+Math.random()*1.6}s`;
       document.body.appendChild(c);setTimeout(()=>c.remove(),4500)}
   }
+  function rollPanda(){
+    const d=100,dist=innerWidth+260,turns=Math.max(2,Math.round(dist/(Math.PI*d)));
+    const r=document.createElement('div');r.className='roller';
+    r.style.setProperty('--dist',dist+'px');r.style.setProperty('--rot',(turns*360)+'deg');
+    r.innerHTML=`<div class="rolltxt">Che capriole! 🐼</div><svg class="rollball" viewBox="0 0 100 100" width="${d}" height="${d}" aria-hidden="true">
+      <ellipse cx="26" cy="82" rx="13" ry="10" fill="#222"/><ellipse cx="74" cy="82" rx="13" ry="10" fill="#222"/>
+      <circle cx="50" cy="58" r="34" fill="#fff" stroke="#222" stroke-width="2"/>
+      <path d="M17 52a34 34 0 0 1 66 0Q50 66 17 52Z" fill="#222"/>
+      <circle cx="29" cy="22" r="11" fill="#222"/><circle cx="71" cy="22" r="11" fill="#222"/>
+      <circle cx="50" cy="38" r="26" fill="#fff" stroke="#222" stroke-width="2"/>
+      <ellipse cx="39" cy="35" rx="7" ry="9" fill="#222" transform="rotate(20 39 35)"/><ellipse cx="61" cy="35" rx="7" ry="9" fill="#222" transform="rotate(-20 61 35)"/>
+      <circle cx="40" cy="33" r="2.4" fill="#fff"/><circle cx="60" cy="33" r="2.4" fill="#fff"/>
+      <ellipse cx="50" cy="47" rx="4.5" ry="3.2" fill="#222"/><path d="M44 53q6 5 12 0" fill="none" stroke="#222" stroke-width="2" stroke-linecap="round"/></svg>`;
+    document.body.appendChild(r);setTimeout(()=>r.remove(),4600);
+  }
   function flyPlane(){
     const f=document.createElement('div');f.className='flyer';
     f.innerHTML=SECTION_ICONS.voli.replace('class="pk big"','class="flyicon"')+'<div class="flytxt">Allacciate le cinture! 🐼✈️</div>';
     document.body.appendChild(f);setTimeout(()=>f.remove(),5200);
   }
   const EGGS={
+    hero:()=>{rollPanda();return null},
     swing:()=>`<img src="panda-altalena.gif" alt="Un panda sull'altalena" width="300" height="300"><div class="eggtxt">🐼 Wheeeee! Buon viaggio!</div>`,
     itinerario:()=>EGGS.swing(),
     voli:()=>{flyPlane();return null},
@@ -1044,7 +1065,7 @@ async function fxLoad(){
     let key=null;
     const pk=e.target.closest('.pk');
     if(pk){const sec=pk.closest('section');key=sec&&EGGS[sec.id]?sec.id:'swing'}
-    else if(e.target.closest('#heroPanda'))key='swing';
+    else if(e.target.closest('#heroPanda'))key='hero';
     if(!key)return;
     const now=Date.now();
     if(now-last<450&&lastKey===key){last=0;open(key)}else{last=now;lastKey=key}
