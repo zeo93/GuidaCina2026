@@ -187,6 +187,8 @@ details[open]>summary .chev{transform:rotate(90deg)}
 .zz{position:absolute;right:-6px;top:20px;font-weight:800;color:#1f5c8b;opacity:0;animation:zz 2.4s infinite}
 .z2{animation-delay:.8s}.z3{animation-delay:1.6s}
 @keyframes zz{0%{opacity:0;transform:translate(0,0) scale(.6)}30%{opacity:1}100%{opacity:0;transform:translate(24px,-50px) scale(1.5)}}
+.coin{position:fixed;top:-34px;font-size:26px;z-index:210;animation:fall linear forwards;pointer-events:none}
+.anim-valuta{animation:bob 1s ease-in-out infinite}
 .confetto{position:fixed;top:-12px;width:9px;height:14px;z-index:210;animation:fall linear forwards;pointer-events:none}
 @keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
 .flyer{position:fixed;top:30%;left:-220px;z-index:210;pointer-events:none;display:flex;align-items:center;gap:6px;animation:fly 5s linear forwards}
@@ -209,6 +211,15 @@ details[open]>summary .chev{transform:rotate(90deg)}
 .tx4{font-size:1rem;color:#555;margin-bottom:20px}
 .phrase{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid var(--line)}
 .phrase:last-child{border:0}
+.conv{padding:14px}
+.convrow{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap}
+.convrow label{flex:1 1 130px;font-size:.88rem;color:var(--muted);display:flex;flex-direction:column;gap:4px}
+.convrow input{font:inherit;font-size:1.4rem;font-weight:700;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink);width:100%}
+.cvopt{margin-top:12px;font-size:.92rem}
+.cvopt summary{cursor:pointer;font-weight:600}
+#cvTable .row{display:flex;justify-content:space-between;padding:9px 14px;border-bottom:1px solid var(--line);font-size:.98rem}
+#cvTable .row:last-child{border:0}
+#cvTable .row b{font-weight:700}
 .zh{font-size:1.25rem;font-weight:700}
 .pa{display:flex;gap:6px;flex:none}
 .pa .btn{padding:6px 9px}
@@ -267,6 +278,7 @@ footer{text-align:center;color:var(--muted);font-size:.82rem;padding:0 16px 40px
   <a href="#contatti">📞 Contatti</a>
   <a href="#checklist">✅ Checklist</a>
   <a href="#frasi">💬 Frasi</a>
+  <a href="#valuta">💱 Valuta</a>
 </div></nav>
 
 <main class="wrap">
@@ -316,6 +328,28 @@ footer{text-align:center;color:var(--muted);font-size:.82rem;padding:0 16px 40px
   <h2>💬 Frasi utili</h2>
   <p class="small muted">Tocca 🔊 per ascoltare (se il dispositivo ha una voce cinese), 🔍 per mostrare la frase a schermo intero, 📋 per copiarla.</p>
   <div id="phrases"></div>
+</section>
+
+<section id="valuta">
+  <h2>💱 Convertitore euro ⇄ yuan</h2>
+  <div class="card conv">
+    <div class="convrow">
+      <label>🇪🇺 Euro (€)<input id="cvEur" type="text" inputmode="decimal" placeholder="0" autocomplete="off"></label>
+      <button id="cvSwap" class="btn" aria-label="Inverti">⇄</button>
+      <label>🇨🇳 Yuan (¥ / RMB)<input id="cvCny" type="text" inputmode="decimal" placeholder="0" autocomplete="off"></label>
+    </div>
+    <div class="filters" id="cvQuick" style="margin:10px 0 0"></div>
+    <div class="small muted" id="cvRate" style="margin-top:10px"></div>
+    <details class="cvopt"><summary>⚙️ Opzioni: tasso e commissione</summary>
+      <div class="convrow" style="margin-top:8px">
+        <label>Tasso personalizzato (¥ per 1 €)<input id="cvCustom" type="text" inputmode="decimal" placeholder="vuoto = tasso ufficiale" autocomplete="off"></label>
+        <label>Commissione carta/app (%)<input id="cvFee" type="text" inputmode="decimal" placeholder="0" autocomplete="off"></label>
+      </div>
+      <div class="small muted">La commissione (spesso circa il 3% sui pagamenti con carta estera) viene aggiunta al costo in euro.</div>
+    </details>
+  </div>
+  <h3 style="margin:18px 0 8px">Prezzi di riferimento</h3>
+  <div class="card"><div id="cvTable"></div></div>
 </section>
 </main>
 <div id="installPop" class="installpop" role="dialog" aria-label="Aggiungi alla schermata Home">
@@ -600,6 +634,7 @@ hotel:`<svg class="pk big" viewBox="0 0 64 64" role="img" aria-label="Panda che 
 const PH=(cx,cy,r)=>`<circle cx="${cx-r*.8}" cy="${cy-r*.8}" r="${r*.38}" fill="#222"/><circle cx="${cx+r*.8}" cy="${cy-r*.8}" r="${r*.38}" fill="#222"/><circle cx="${cx}" cy="${cy}" r="${r}" fill="#fff" stroke="#222" stroke-width="1.7"/><ellipse cx="${cx-r*.4}" cy="${cy-r*.05}" rx="${r*.23}" ry="${r*.3}" fill="#222" transform="rotate(20 ${cx-r*.4} ${cy-r*.05})"/><ellipse cx="${cx+r*.4}" cy="${cy-r*.05}" rx="${r*.23}" ry="${r*.3}" fill="#222" transform="rotate(-20 ${cx+r*.4} ${cy-r*.05})"/><circle cx="${cx-r*.37}" cy="${cy-r*.1}" r="${r*.08}" fill="#fff"/><circle cx="${cx+r*.37}" cy="${cy-r*.1}" r="${r*.08}" fill="#fff"/><ellipse cx="${cx}" cy="${cy+r*.35}" rx="${r*.15}" ry="${r*.11}" fill="#222"/><path d="M${cx-r*.2} ${cy+r*.55}q${r*.2} ${r*.17} ${r*.4} 0" fill="none" stroke="#222" stroke-width="1.4" stroke-linecap="round"/>`;
 const svgWrap=(label,inner)=>`<svg class="pk big" viewBox="0 0 64 64" role="img" aria-label="${label}">${inner}</svg>`;
 Object.assign(SECTION_ICONS,{
+valuta:svgWrap('Panda con le monete',`<ellipse cx="24" cy="60" rx="14" ry="6" fill="#222"/>${PH(24,38,15)}<circle cx="49" cy="20" r="11" fill="#f5c542" stroke="#a87a10" stroke-width="2"/><circle cx="49" cy="20" r="7.5" fill="none" stroke="#c99a1c" stroke-width="1"/><text x="49" y="25" font-size="14" font-weight="800" text-anchor="middle" fill="#7a5400" font-family="Arial,sans-serif">¥</text><circle cx="53" cy="45" r="9" fill="#e6e8ec" stroke="#7a8190" stroke-width="2"/><text x="53" y="50" font-size="12" font-weight="800" text-anchor="middle" fill="#4a5060" font-family="Arial,sans-serif">€</text><ellipse cx="39" cy="52" rx="5" ry="3" fill="#222" transform="rotate(-20 39 52)"/>`),
 avvertenze:svgWrap('Panda con cartello di avviso',`<ellipse cx="26" cy="60" rx="14" ry="6" fill="#222"/>${PH(26,38,15)}<ellipse cx="41" cy="50" rx="6" ry="3.4" fill="#222" transform="rotate(-35 41 50)"/><path d="M50 12L63 40H37Z" fill="#ffc83d" stroke="#222" stroke-width="2" stroke-linejoin="round"/><path d="M50 21v10" stroke="#222" stroke-width="3" stroke-linecap="round"/><circle cx="50" cy="35.5" r="1.8" fill="#222"/>`),
 contatti:svgWrap('Panda al telefono',`<ellipse cx="28" cy="60" rx="14" ry="6" fill="#222"/>${PH(28,38,16)}<rect x="47" y="20" width="11" height="24" rx="3.5" fill="#1f5c8b" stroke="#222" stroke-width="1.6" transform="rotate(8 52 32)"/><rect x="49" y="24" width="7" height="14" rx="1.5" fill="#8fd0ff" transform="rotate(8 52 32)"/><ellipse cx="46" cy="40" rx="3.6" ry="5" fill="#222"/><path d="M60 14q3 3 0 7M56 11q6 6 0 13" fill="none" stroke="#c4501a" stroke-width="1.8" stroke-linecap="round"/>`),
 checklist:svgWrap('Panda con la lista',`<ellipse cx="22" cy="60" rx="14" ry="6" fill="#222"/>${PH(22,38,15)}<rect x="36" y="20" width="25" height="37" rx="3.5" fill="#fff" stroke="#8a6428" stroke-width="2"/><rect x="42" y="16" width="13" height="7" rx="2" fill="#999" stroke="#555" stroke-width="1.2"/><path d="M40.5 33l2.5 2.5 4.5-5M40.5 43l2.5 2.5 4.5-5M40.5 53l2.5 2.5 4.5-5" fill="none" stroke="#2e7d4f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M50.5 33h7M50.5 43h7M50.5 53h7" stroke="#aaa" stroke-width="2" stroke-linecap="round"/><ellipse cx="36" cy="51" rx="5.5" ry="3.2" fill="#222" transform="rotate(-25 36 51)"/>`),
@@ -885,6 +920,41 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-fun]');if(
 (async()=>{try{const r=await fetch('https://en.wikipedia.org/api/rest_v1/page/summary/Giant_panda');const j=await r.json();
   const s=j.thumbnail&&j.thumbnail.source;if(s){const im=new Image();im.onload=()=>{const h=$('#heroPanda');h.style.backgroundImage=`url("${s}")`;h.textContent=''};im.src=s}}catch(e){}})();
 
+/* convertitore euro ⇄ yuan (tassi BCE da frankfurter.dev, salvati per l'uso offline) */
+const FX_DEFAULT=7.5;
+let fx=ls.get('fx',null)||{rate:FX_DEFAULT,date:null};let fxLive=false;
+const num=s=>{const n=parseFloat(String(s).replace(/\s/g,'').replace(',','.'));return isFinite(n)?n:NaN};
+const f2=n=>(Math.round(n*100)/100).toFixed(2).replace('.',',').replace(/,00$/,'');
+let cvLast='eur';
+const fxRate=()=>{const c=num($('#cvCustom').value);return c>0?c:fx.rate};
+const fxFee=()=>{const f=num($('#cvFee').value);return 1+(f>0?f/100:0)};
+function cvCalc(){
+  const r=fxRate(),k=fxFee();
+  if(cvLast==='eur'){const e=num($('#cvEur').value);$('#cvCny').value=isNaN(e)?'':f2(e*r/k)}
+  else{const y=num($('#cvCny').value);$('#cvEur').value=isNaN(y)?'':f2(y/r*k)}
+  const custom=num($('#cvCustom').value)>0;
+  const src=custom?'tasso personalizzato':fxLive?`tasso BCE del ${fx.date}`:fx.date?`ultimo tasso salvato (BCE, ${fx.date})`:'tasso indicativo: collegati a internet per aggiornarlo';
+  $('#cvRate').textContent=`1 € = ${f2(r)} ¥  ·  1 ¥ ≈ ${(1/r).toFixed(3).replace('.',',')} €  ·  ${src}${k>1?` · commissione ${f2((k-1)*100)}%`:''}`;
+  $('#cvTable').innerHTML=
+    '<div class="row muted small"><span>Yuan → Euro</span><span></span></div>'+[5,10,20,50,100,200,500,1000].map(y=>`<div class="row"><span>¥ ${y}</span><b>€ ${f2(y/r*k)}</b></div>`).join('')+
+    '<div class="row muted small"><span>Euro → Yuan</span><span></span></div>'+[5,10,20,50,100,200,500].map(e=>`<div class="row"><span>€ ${e}</span><b>¥ ${f2(e*r/k)}</b></div>`).join('');
+}
+async function fxLoad(){
+  try{const j=await (await fetch('https://api.frankfurter.dev/v1/latest?base=EUR&symbols=CNY')).json();
+    if(j&&j.rates&&j.rates.CNY>0){fx={rate:j.rates.CNY,date:j.date};fxLive=true;ls.set('fx',fx);cvCalc()}}catch(e){}
+}
+(function(){
+  $('#cvCustom').value=ls.get('cvCustom','');$('#cvFee').value=ls.get('cvFee','');
+  $('#cvQuick').innerHTML=[['10 ¥','cny',10],['50 ¥','cny',50],['100 ¥','cny',100],['500 ¥','cny',500],['10 €','eur',10],['50 €','eur',50],['100 €','eur',100]].map(q=>`<button class="chip" data-cvq="${q[1]}:${q[2]}">${q[0]}</button>`).join('');
+  $('#cvEur').oninput=()=>{cvLast='eur';cvCalc()};
+  $('#cvCny').oninput=()=>{cvLast='cny';cvCalc()};
+  $('#cvCustom').oninput=()=>{ls.set('cvCustom',$('#cvCustom').value);cvCalc()};
+  $('#cvFee').oninput=()=>{ls.set('cvFee',$('#cvFee').value);cvCalc()};
+  $('#cvSwap').onclick=()=>{const e=$('#cvEur').value,y=$('#cvCny').value;$('#cvEur').value=y;$('#cvCny').value=e;cvLast=cvLast==='eur'?'cny':'eur';cvCalc()};
+  document.addEventListener('click',e=>{const q=e.target.closest('[data-cvq]');if(!q)return;const [k,v]=q.dataset.cvq.split(':');cvLast=k;$(k==='eur'?'#cvEur':'#cvCny').value=v;cvCalc()});
+  $('#cvEur').value='10';cvCalc();fxLoad();
+})();
+
 /* easter egg: doppio clic/tocco su ogni panda (uno diverso per sezione) */
 (function(){
   const egg=$('#egg'),box=$('#eggContent'),close=()=>egg.classList.remove('on');
@@ -915,7 +985,10 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-fun]');if(
     contatti:()=>`<div class="eggicon-wrap">${big('contatti')}</div><div class="eggtxt">📞 Pronto? 你好!</div><p class="eggp">Numeri di emergenza in Cina:<br><b>110</b> polizia · <b>120</b> ambulanza · <b>119</b> vigili del fuoco</p>`,
     checklist:()=>{confetti();const n=CHECKS.filter((_,i)=>checked[i]).length,left=CHECKS.length-n,nx=CHECKS.find((_,i)=>!checked[i]);
       return `<div class="eggicon-wrap">${big('checklist')}</div><div class="eggtxt">${left?`🎒 Fatte ${n} su ${CHECKS.length}`:'🎉 Valigia pronta!'}</div><p class="eggp">${left?`Prossima da fare: <b>${esc(nx)}</b>`:'Tutto spuntato: buon viaggio!'}</p>`},
-    frasi:()=>{const h=phrase();return h}
+    frasi:()=>{const h=phrase();return h},
+    valuta:()=>{for(let i=0;i<30;i++){const c=document.createElement('span');c.className='coin';c.textContent=i%2?'🪙':'💰';
+        c.style.cssText=`left:${Math.random()*95}vw;animation-delay:${Math.random()*.9}s;animation-duration:${2+Math.random()*1.5}s`;document.body.appendChild(c);setTimeout(()=>c.remove(),4500)}
+      return `<div class="eggicon-wrap">${big('valuta')}</div><div class="eggtxt">🐼 Un panda non ha prezzo…</div><p class="eggp">…ma oggi 1 € vale <b>${f2(fxRate())} ¥</b>.<br>Meglio spendere i yuan in baozi!</p>`}
   };
   function open(key){
     gc('easter-egg-'+key);
@@ -978,6 +1051,7 @@ async function saveOffline(auto){
   try{
     await Promise.all([...document.querySelectorAll('.day')].map(loadImg));
     await Promise.all(WXK.map(fetchCity));
+    await fxLoad();
     await new Promise(r=>setTimeout(r,2500));
     ls.set('offlineDone',Date.now());
     msg.textContent='✔️ Salvato: la guida ora funziona anche senza connessione.';

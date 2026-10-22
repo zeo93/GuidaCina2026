@@ -1,5 +1,5 @@
 /* Service worker: la guida funziona offline dopo la prima visita online */
-const VERSION = 'cina2026-v14';
+const VERSION = 'cina2026-v15';
 const SHELL = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png', './apple-touch-icon.png', './panda-altalena.gif'];
 
 self.addEventListener('install', e => {
@@ -32,8 +32,8 @@ self.addEventListener('fetch', e => {
     return;
   }
 
-  // Meteo: prima la rete, altrimenti l'ultimo dato salvato
-  if (url.hostname === 'api.open-meteo.com') {
+  // Meteo e cambio valuta: prima la rete, altrimenti l'ultimo dato salvato
+  if (url.hostname === 'api.open-meteo.com' || url.hostname === 'api.frankfurter.dev') {
     e.respondWith(
       fetch(req).then(res => {
         if (res.ok) { const copy = res.clone(); caches.open(VERSION).then(c => c.put(req, copy)); }
