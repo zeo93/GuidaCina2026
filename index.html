@@ -125,6 +125,7 @@ details[open]>summary .chev{transform:rotate(90deg)}
 .route .line{flex:1;border-top:2px dashed var(--line);position:relative;min-width:30px}
 .route .line:after{content:"✈";position:absolute;left:50%;top:-12px;transform:translateX(-50%);background:var(--card);padding:0 4px}
 .ftime{text-align:right;font-size:.9rem}
+.finfo{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:6px;border-top:1px dashed var(--line);padding-top:10px}
 @media(max-width:560px){.flight{grid-template-columns:1fr}.ftime{text-align:left}}
 /* hotel */
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
@@ -321,6 +322,7 @@ footer{text-align:center;color:var(--muted);font-size:.82rem;padding:0 16px 40px
 <section id="voli">
   <h2>✈️ Piano voli</h2>
   <div id="flights"></div>
+  <div class="note">🚪 <b>Gate:</b> viene assegnato poche ore prima della partenza e può cambiare: controllalo sui monitor dell'aeroporto, nell'app Air China o sulla carta d'imbarco. <b>Durata:</b> calcolata dagli orari del libretto, tenendo conto del fuso orario. <b>Terminal:</b> indicativi (di norma Air China usa il Terminal 3 a Fiumicino e a Pechino, il Terminal 2 a Shanghai Hongqiao): confermali sulla carta d'imbarco.</div>
   <div class="note">Presentati in aeroporto almeno <b>3 ore prima</b> della partenza. Il bagaglio viene spedito fino alla destinazione finale: all'ingresso in Cina e nei transiti segui le indicazioni "Transit". Potrebbe essere richiesto di ritirare e riconsegnare il bagaglio a Pechino (Air China): verifica al check-in.</div>
 </section>
 
@@ -467,9 +469,9 @@ const DAYS=[
 ];
 
 const FLIGHTS=[
- {code:'CA 940',from:'FCO',fromN:'Roma Fiumicino',to:'PEK',toN:'Pechino Capital',dep:'27/10/2026 · 19:50',arr:'28/10/2026 · 13:00'},
- {code:'CA 1590',from:'SHA',fromN:'Shanghai Hongqiao',to:'PEK',toN:'Pechino Capital',dep:'08/11/2026 · 08:55',arr:'08/11/2026 · 11:10'},
- {code:'CA 939',from:'PEK',fromN:'Pechino Capital',to:'FCO',toN:'Roma Fiumicino',dep:'08/11/2026 · 13:10',arr:'08/11/2026 · 17:50'}
+ {code:'CA 940',from:'FCO',fromN:'Roma Fiumicino',to:'PEK',toN:'Pechino Capital',dep:'27/10/2026 · 19:50',arr:'28/10/2026 · 13:00',dur:'10 h 10 min',tDep:'Terminal 3',tArr:'Terminal 3'},
+ {code:'CA 1590',from:'SHA',fromN:'Shanghai Hongqiao',to:'PEK',toN:'Pechino Capital',dep:'08/11/2026 · 08:55',arr:'08/11/2026 · 11:10',dur:'2 h 15 min',tDep:'Terminal 2',tArr:'Terminal 3'},
+ {code:'CA 939',from:'PEK',fromN:'Pechino Capital',to:'FCO',toN:'Roma Fiumicino',dep:'08/11/2026 · 13:10',arr:'08/11/2026 · 17:50',dur:'11 h 40 min',tDep:'Terminal 3',tArr:'Terminal 3'}
 ];
 const HOTELS=[
  ['Pechino','Hotel Wanda Moment','Wanda Moments Hotel Beijing Qianmen','28–30 ott (3 notti)','https://ak-d.tripcdn.com/images/1mc5n12000m1pjktr0359_R_960_660_R5_D.jpg','Hotel Wanda Moment'],
@@ -797,7 +799,8 @@ function openToday(){
 $('#flights').innerHTML=FLIGHTS.map(f=>`<div class="card flight">
  <div class="fcode">${f.code}</div>
  <div class="route"><div class="ap"><b>${f.from}</b><span class="small muted">${f.fromN}</span></div><div class="line"></div><div class="ap"><b>${f.to}</b><span class="small muted">${f.toN}</span></div></div>
- <div class="ftime"><div>🛫 ${f.dep}</div><div>🛬 ${f.arr}</div></div></div>`).join('');
+ <div class="ftime"><div>🛫 ${f.dep}</div><div>🛬 ${f.arr}</div></div>
+ <div class="finfo"><span class="meal">⏱ Durata ${f.dur}</span><span class="meal">🏢 Partenza: ${f.tDep}</span><span class="meal">🏢 Arrivo: ${f.tArr}</span><span class="meal no">🚪 Gate: comunicato in aeroporto</span></div></div>`).join('');
 const CITYWIKI={'Pechino':'Beijing',"Xi'an":"Xi'an",'Chengdu':'Chengdu','Guilin':'Guilin','Shanghai':'Shanghai'};
 $('#hotels').innerHTML=HOTELS.map((h,i)=>`<div class="card hcard hotelc"><div class="himg" data-i="${i}"><span class="emo">🏨</span><div class="cap">Carico foto…</div></div><div class="hb"><div class="muted small">${h[0]}</div><h3>${h[1]}</h3><div class="small" style="margin-bottom:10px">📆 ${h[3]}</div><div class="places"><a class="btn fill" target="_blank" rel="noopener" href="${M(h[2])}">📍 Google Maps</a><a class="btn" target="_blank" rel="noopener" href="https://www.google.com/search?tbm=isch&q=${encodeURIComponent(h[2])}">🖼️ Altre foto</a></div>
 <div class="cnaddr"><div class="small muted">In cinese</div><div class="cnname">${HCN[i].cn}</div><div class="cnad" data-ad="${i}"></div></div>
